@@ -216,3 +216,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ============================
+# Research data
+# ============================
+
+# Raw human neural/behavioral data
+data/raw/
+
+# Processed datasets
+data/processed/
+
+# MATLAB data files
+*.mat
