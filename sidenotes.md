@@ -1,8 +1,8 @@
-# Number Simplex Reproduction — Progress Notes
+# Number Simplex Reproduction :  Notes
 
-**Paper:** *A number simplex in the human medial temporal lobe*  
-**Goal:** Independently reproduce the neural coding analysis first, then test the simplex-geometry claim.
+**Paper:** *A number simplex in the human medial temporal lobe*   
 
+https://www.biorxiv.org/content/10.64898/2026.06.25.734462v1
 ---
 
 ## 1. Data setup
