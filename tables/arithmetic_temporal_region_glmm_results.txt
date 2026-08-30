@@ -1,0 +1,59 @@
+
+============================================================
+REGIONAL GLMM RESULT
+============================================================
+
+
+Generalized linear mixed-effects model fit by PL
+
+Model information:
+    Number of observations             554
+    Fixed effects coefficients           4
+    Random effects coefficients         11
+    Covariance parameters                1
+    Distribution                    Binomial
+    Link                            Logit 
+    FitMethod                       MPL   
+
+Formula:
+    IsTuned ~ 1 + Region + (1 | Subject)
+
+Model fit statistics:
+    AIC       BIC       LogLikelihood    Deviance
+    2459.3    2480.9    -1224.6          2449.3  
+
+Fixed effects coefficients (95% CIs):
+    Name                       Estimate     SE         tStat       DF     pValue    
+    {'(Intercept)'    }         -0.89301    0.11168     -7.9961    550    7.6187e-15
+    {'Region_ent'     }        -0.094374    0.29105    -0.32425    550       0.74587
+    {'Region_amy'     }         0.039523    0.27289     0.14483    550        0.8849
+    {'Region_para-hpc'}        -0.062498    0.53796    -0.11618    550       0.90755
+
+
+    Lower       Upper   
+     -1.1124    -0.67364
+    -0.66609     0.47734
+    -0.49651     0.57556
+     -1.1192      0.9942
+
+Random effects covariance parameters:
+Group: Subject (11 Levels)
+    Name1                  Name2                  Type           Estimate  
+    {'(Intercept)'}        {'(Intercept)'}        {'std'}        4.4731e-05
+
+Group: Error
+    Name                        Estimate
+    {'sqrt(Dispersion)'}        1       
+
+
+============================================================
+ANOVA RESULT
+============================================================
+
+
+    ANOVA MARGINAL TESTS: DFMETHOD = 'RESIDUAL'
+
+    Term                   FStat       DF1    DF2    pValue    
+    {'(Intercept)'}          63.937    1      550    7.6187e-15
+    {'Region'     }        0.051852    3      550       0.98441
+

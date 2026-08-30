@@ -1,0 +1,3 @@
+analysis,n_coding_neurons,n_unique_preferences,n_tied_neurons,friedman_statistic,friedman_df,p_value,minimum_tie_p,maximum_tie_p,tie_assignments_p_lt_005
+primary_unique_preferences,160,156,4,12.189818809318362,8,0.14293346054014602,,,
+tie_robustness,160,156,4,,8,,0.07549294385774519,0.29475788042515433,0.0

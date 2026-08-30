@@ -1,0 +1,11 @@
+metric,value
+n_neurons,548.0
+mean_fr_accuracy,0.10641646495280631
+mean_temporal_accuracy,0.14483773566308683
+mean_improvement,0.03842127071028054
+improvement_percentage_points,3.842127071028054
+sem_improvement_percentage_points,0.1296036379607446
+paired_t,29.64521005337666
+df,547.0
+paired_p,6.896612467108994e-116
+paper_improvement_percentage_points,3.79

@@ -99,3 +99,34 @@ fprintf('ANOVA: OVERALL REGION EFFECT\n');
 fprintf('============================================================\n\n');
 
 disp(anova_results);
+
+
+
+
+%% ------------------------------------------------------------
+% 7. SAVE RESULTS TO TEXT FILE
+% ------------------------------------------------------------
+
+output_path = fullfile( ...
+    project_root, ...
+    'tables', ...
+    'arithmetic_temporal_region_glmm_results.txt' ...
+);
+
+diary(output_path);
+
+fprintf('\n============================================================\n');
+fprintf('REGIONAL GLMM RESULT\n');
+fprintf('============================================================\n\n');
+
+disp(glme);
+
+fprintf('\n============================================================\n');
+fprintf('ANOVA RESULT\n');
+fprintf('============================================================\n\n');
+
+disp(anova_results);
+
+diary off;
+
+fprintf('\nSaved GLMM results to:\n%s\n', output_path);

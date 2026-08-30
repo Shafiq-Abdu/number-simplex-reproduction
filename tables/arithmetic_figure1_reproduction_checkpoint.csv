@@ -1,0 +1,8 @@
+Analysis,Paper,Reproduction,Conclusion_matches
+Temporal coding %,24.8,28.6136,Yes
+Firing-rate coding %,3.36,4.6212,Yes
+Temporal vs FR coding p,< 0.0001,6.1999e-09,Yes
+Region effect p,0.74,0.98441,Yes
+Preferred-number Friedman p,0.0692,0.14293,Yes
+Temporal decoding improvement (pp),3.79,3.84213,Yes — very close
+Fig. 1N neurons,553,548.0,Sparse-neuron discrepancy
