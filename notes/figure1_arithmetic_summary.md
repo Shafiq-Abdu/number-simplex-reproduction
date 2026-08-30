@@ -1,7 +1,8 @@
 # Figure 1 Arithmetic Analysis — Reproduction Summary
 
 ## 1. Goal
-To reproduce the **arithmetic-task analyses in Figure 1** of the number-simplex paper using the provided raw neural and behavioral data.
+
+ To reproduce the **arithmetic-task analyses in Figure 1** of the number-simplex paper using the provided raw neural and behavioral data.
 
 The main questions were:
 
@@ -54,7 +55,10 @@ After filtering to these regions:
 
 This exactly matches the paper's arithmetic MTL population:
 
-554 neurons
+```math
+\boxed{554\text{ neurons}}
+```
+
 
 ---
 
@@ -64,9 +68,9 @@ For Figures 1–3, the analysis is based on the **presented operands**, not the 
 
 Only operands with values
 
-$
-1,2,...,9
-$
+```math
+1,2,\ldots,9
+```
 
 were retained because the classifier is a **9-way number classifier**.
 
@@ -81,7 +85,9 @@ For example:
 
 Across all 11 subjects this produced:
 
-2328 operand presentations
+```math
+\boxed{2328\text{ operand presentations}}
+```
 
 Incorrect trials were retained because the paper states that Figures 1–3 analyze stimulus-defined representations rather than response-corrected representations.
 
@@ -123,15 +129,17 @@ Therefore, the behavioral columns `cue1` and `cue2` represent operand values, bu
 
 For arithmetic decoding, the paper analyzes:
 
-
-0.05-0.95seconds(50 ms - 950 ms)
-
+```math
+0.05-0.95\text{ s}
+```
 
 after operand onset.
 
 Therefore each neural response contains:
 
-900 ms(0.9 s)
+```math
+900\text{ ms}
+```
 
 of activity.
 
@@ -177,15 +185,15 @@ A **9-way Linear Discriminant Analysis (LDA)** classifier was reconstructed.
 
 The classes were:
 
-$$
-1,2,...,9.
-$$
+```math
+1,2,\ldots,9.
+```
 
 A uniform class prior was used:
 
-$$
+```math
 P(k)=\frac{1}{9}.
-$$
+```
 
 The paper tested three MATLAB `fitcdiscr` Gamma values:
 
@@ -229,18 +237,18 @@ n_splits = min(10, minimum_class_count)
 
 For example, YFF had only 7 presentations for its least frequent number, so YFF used:
 
-$$
+```math
 \boxed{7\text{-fold stratified CV}}
-$$
+```
 
 Decoding accuracy was calculated from all pooled held-out predictions:
 
-$$
+```math
 \text{Accuracy}
 =
 \frac{\text{total correct held-out predictions}}
 {\text{total held-out predictions}}.
-$$
+```
 
 This is preferable to simply averaging fold accuracies because folds can contain slightly different numbers of observations.
 
@@ -251,47 +259,47 @@ This is preferable to simply averaging fold accuracies because folds can contain
 
 After selecting the best bin size and Gamma for a neuron, statistical significance was assessed using:
 
-$$
+```math
 \boxed{200\text{ label permutations}}
-$$
+```
 
 Importantly, the bin size and Gamma were **not re-optimized during every permutation**.
 
 The paper's permutation p-value convention was reproduced:
 
-$$
+```math
 p=
 \frac{
 1+\#(\text{permuted accuracy}\geq\text{observed accuracy})
 }{
 1+200
 }.
-$$
+```
 
 Therefore:
 
-$$
+```math
 p=
 \frac{
 1+\#(\text{permuted accuracy}\geq\text{observed accuracy})
 }{
 201
 }.
-$$
+```
 
 The smallest possible p-value is:
 
-$$
+```math
 \frac{1}{201}
 =
 0.004975.
-$$
+```
 
 A neuron was classified as number-coding when:
 
-$$
+```math
 \boxed{p<0.05}.
-$$
+```
 
 
 ---
@@ -305,15 +313,15 @@ Our temporal analysis found:
 
 Using the complete 554-neuron MTL population as the denominator, the mean subject-level temporal coding percentage was:
 
-$$
+```math
 \boxed{28.61\pm1.38\%}
-$$
+```
 
 compared with the paper:
 
-$$
+```math
 \boxed{24.80\pm1.73\%}.
-$$
+```
 
 Therefore our coding percentage is somewhat higher than the reported value.
 
@@ -328,31 +336,31 @@ However, the qualitative conclusion is reproduced:
 
 The firing-rate representation reduces the entire 900-ms response to one feature:
 
-$$
+```math
 \text{FR feature}
 =
 \text{total spikes during }0.05-0.95\text{ s}.
-$$
+```
 
 This is equivalent to using a single:
 
-$$
+```math
 900\text{-ms bin}.
-$$
+```
 
 Our result was:
 
-$$
+```math
 \boxed{4.62\pm0.84\%}
-$$
+```
 
 number-coding neurons across subjects.
 
 The paper reports:
 
-$$
+```math
 \boxed{3.36\pm0.71\%}.
-$$
+```
 
 Again, our percentage is somewhat higher, but the same major result is obtained:
 
@@ -376,27 +384,27 @@ Therefore the measurements are naturally paired by subject.
 
 Our result was:
 
-$$
+```math
 \boxed{t(10)=17.94}
-$$
+```
 
 with:
 
-$$
+```math
 \boxed{p=6.20\times10^{-9}}.
-$$
+```
 
 The paper reports:
 
-$$
+```math
 p<0.0001.
-$$
+```
 
 Thus both analyses strongly support:
 
-$$
+```math
 \boxed{\text{Temporal coding detects substantially more number-coding neurons than FR coding.}}
-$$
+```
 
 
 ---
@@ -453,21 +461,21 @@ anova(glme)
 
 Our result was:
 
-$$
+```math
 \boxed{F(3,550)=0.052,\quad p=0.984}
-$$
+```
 
 while the paper reports:
 
-$$
+```math
 \boxed{F(3,550)=0.43,\quad p=0.74}.
-$$
+```
 
 The exact statistics differ, but both clearly conclude:
 
-$$
+```math
 \boxed{\text{No significant regional difference in arithmetic number coding.}}
-$$
+```
 
 
 ---
@@ -485,9 +493,9 @@ Among the 160 temporal coding neurons:
 
 Thus the primary preferred-number analysis used:
 
-$$
+```math
 \boxed{156\text{ uniquely assigned neurons}}.
-$$
+```
 
 The overall preferred-number counts were:
 
@@ -519,23 +527,23 @@ The Friedman test evaluates whether particular numbers consistently receive high
 
 Our result was:
 
-$$
+```math
 \boxed{\chi_F^2(8)=12.19,\quad p=0.143}.
-$$
+```
 
 The paper reports:
 
-$$
+```math
 \boxed{p=0.0692}.
-$$
+```
 
 Both p-values are above 0.05.
 
 Therefore:
 
-$$
+```math
 \boxed{\text{No statistically significant population preference for a particular arithmetic number.}}
-$$
+```
 
 
 ---
@@ -555,11 +563,11 @@ YFL neuron 38 -> {4, 5}
 
 There are only:
 
-$$
+```math
 3\times2\times2\times2
 =
 24
-$$
+```
 
 possible ways to resolve these four ties.
 
@@ -575,9 +583,9 @@ Assignments with p < 0.05 = 0 / 24
 
 Thus:
 
-$$
+```math
 \boxed{\text{The nonsignificant preferred-number result is robust to every possible tie assignment.}}
-$$
+```
 
 
 ---
@@ -596,23 +604,23 @@ Figure 1N instead asks:
 
 Therefore Figure 1N compares:
 
-$$
+```math
 \text{Temporal decoding accuracy}
-$$
+```
 
 against:
 
-$$
+```math
 \text{Firing-rate decoding accuracy}
-$$
+```
 
 for individual neurons.
 
 The paper reports that temporal coding improves single-neuron decoding accuracy by:
 
-$$
+```math
 \boxed{3.79\text{ percentage points}}.
-$$
+```
 
 
 ---
@@ -628,35 +636,35 @@ Mean temporal accuracy = 0.14484
 
 Therefore:
 
-$$
+```math
 0.14484-0.10642
 =
 0.03842.
-$$
+```
 
 Thus:
 
-$$
+```math
 \boxed{\text{Temporal improvement}=3.842\text{ percentage points}}.
-$$
+```
 
 The paper reports:
 
-$$
+```math
 \boxed{3.79\text{ percentage points}}.
-$$
+```
 
 Therefore:
 
-$$
+```math
 \boxed{3.842\%\text{ ours}\approx3.79\%\text{ paper}}
-$$
+```
 
 with a difference of only:
 
-$$
+```math
 \boxed{0.052\text{ percentage points}}.
-$$
+```
 
 This was one of the strongest numerical reproductions obtained.
 
@@ -686,21 +694,21 @@ A neuron-wise paired t-test was performed between temporal and firing-rate decod
 
 Our result:
 
-$$
+```math
 \boxed{t(547)=29.65}
-$$
+```
 
 with:
 
-$$
+```math
 \boxed{p=6.90\times10^{-116}}.
-$$
+```
 
 The mean improvement was:
 
-$$
+```math
 \boxed{3.842\pm0.130\text{ percentage points (SEM)}}.
-$$
+```
 
 Thus temporal decoding produced a very strong improvement over firing-rate decoding.
 
@@ -711,17 +719,17 @@ Thus temporal decoding produced a very strong improvement over firing-rate decod
 
 The paper reports:
 
-$$
+```math
 553/554
-$$
+```
 
 neurons in the arithmetic decoding-accuracy comparison.
 
 The paper applies a firing-rate criterion of:
 
-$$
+```math
 >0.007\text{ Hz}.
-$$
+```
 
 Our reconstructed task firing rates gave:
 
@@ -743,9 +751,9 @@ Six extremely sparse neurons could not produce complete LDA accuracies:
 
 This produced:
 
-$$
+```math
 \boxed{548}
-$$
+```
 
 neurons with paired numerical temporal and FR decoding accuracies.
 
@@ -834,9 +842,9 @@ Fixed-CV diagnostic:
 
 Thus:
 
-$$
+```math
 \boxed{\text{Fixed CV did not change the YFF coding percentage.}}
-$$
+```
 
 This diagnostic therefore did not explain the temporal coding discrepancy.
 
@@ -867,9 +875,9 @@ Because this alternative procedure is not explicitly specified by the paper and 
 
 Initially, the reported:
 
-$$
+```math
 24.8\%
-$$
+```
 
 could be interpreted as decoding accuracy.
 
@@ -888,15 +896,15 @@ Figure 1N separately analyzes actual decoding accuracy.
 
 The raw files contain:
 
-$$
+```math
 849\text{ neurons}.
-$$
+```
 
 However, Figure 1 uses only MTL neurons:
 
-$$
+```math
 554\text{ neurons}.
-$$
+```
 
 Using all 849 neurons would therefore be incorrect.
 
@@ -919,9 +927,9 @@ phc
 
 Correct region filtering was necessary to reproduce exactly:
 
-$$
+```math
 554\text{ MTL neurons}.
-$$
+```
 
 
 ---
@@ -984,15 +992,15 @@ toExclude = 1
 
 Therefore `toExclude` cannot explain the difference between:
 
-$$
+```math
 28.61\%
-$$
+```
 
 and:
 
-$$
+```math
 24.80\%.
-$$
+```
 
 
 ---
@@ -1009,13 +1017,13 @@ fitcdiscr
 
 Therefore a custom MATLAB-style LDA implementation was constructed using the paper's Gamma covariance regularization:
 
-$$
+```math
 \Sigma_{\gamma}
 =
 (1-\gamma)\Sigma
 +
 \gamma\,\mathrm{diag}(\Sigma).
-$$
+```
 
 
 ---
@@ -1039,9 +1047,9 @@ Cross-validation random seeds can noticeably affect individual-neuron decoding a
 
 We therefore did **not** search for a random seed that artificially produces exactly:
 
-$$
+```math
 24.80\%.
-$$
+```
 
 Instead, the reconstruction uses a documented random seed and reports the remaining discrepancy transparently.
 
@@ -1132,30 +1140,30 @@ The most important unresolved issue is:
 
 Specifically:
 
-$$
+```math
 \text{Temporal coding: }
 28.61\%\text{ ours}
 \quad\text{vs}\quad
 24.80\%\text{ paper}
-$$
+```
 
 and:
 
-$$
+```math
 \text{FR coding: }
 4.62\%\text{ ours}
 \quad\text{vs}\quad
 3.36\%\text{ paper}.
-$$
+```
 
 However:
 
-$$
+```math
 \text{Temporal decoding improvement: }
 3.842\text{ pp ours}
 \quad\text{vs}\quad
 3.79\text{ pp paper}.
-$$
+```
 
 This very close Figure 1N result suggests that the main preprocessing and decoding pipeline is likely close to the authors' analysis.
 
@@ -1177,9 +1185,9 @@ The fixed-CV diagnostic on YFF did not explain the discrepancy.
 
 The close agreement:
 
-$$
+```math
 \boxed{3.842\text{ pp ours}\approx3.79\text{ pp paper}}
-$$
+```
 
 is particularly informative.
 
@@ -1285,33 +1293,33 @@ This conclusion remained nonsignificant under **all 24 possible resolutions** of
 
 The strongest quantitative reproduction was Figure 1N:
 
-$$
+```math
 \boxed{
 3.842\text{ percentage-point temporal improvement}
 \approx
 3.79\text{ percentage points reported}
 }
-$$
+```
 
 The major remaining discrepancy is the percentage of neurons passing the permutation-based number-coding significance threshold:
 
-$$
+```math
 \boxed{
 28.61\%\text{ ours}
 \quad\text{vs}\quad
 24.80\%\text{ paper}
 }
-$$
+```
 
 for temporal coding, and:
 
-$$
+```math
 \boxed{
 4.62\%\text{ ours}
 \quad\text{vs}\quad
 3.36\%\text{ paper}
 }
-$$
+```
 
 for firing-rate coding.
 
@@ -1336,9 +1344,9 @@ The remaining difference should therefore be documented as an **unresolved imple
 
 ## Arithmetic Figure 1 reproduction
 
-$$
+```math
 \boxed{\text{COMPLETE}}
-$$
+```
 
 with documented methodological discrepancies.
 
