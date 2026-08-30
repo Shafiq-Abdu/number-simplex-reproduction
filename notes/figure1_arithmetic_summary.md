@@ -195,13 +195,13 @@ Gamma = 0.2, 0.5, 0.8
 
 The regularized covariance was implemented as:
 
-$$
+```math
 \Sigma_{\gamma}
 =
 (1-\gamma)\Sigma
 +
 \gamma\,\mathrm{diag}(\Sigma).
-$$
+```
 
 For each neuron, every combination of:
 
