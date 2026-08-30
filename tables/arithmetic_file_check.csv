@@ -1,0 +1,12 @@
+subject,csv_exists,behavior_mat_exists,spikes_exists
+YFF,True,True,True
+YFI,True,True,True
+YFJ,True,True,True
+YFK,True,True,False
+YFL,True,True,False
+YFM,True,True,False
+YFP,True,True,True
+YFR,True,True,True
+YFS,True,True,True
+YFT,True,True,True
+YFU,True,True,True
