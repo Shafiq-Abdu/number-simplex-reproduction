@@ -64,9 +64,9 @@ For Figures 1–3, the analysis is based on the **presented operands**, not the 
 
 Only operands with values
 
-$$
+$
 1,2,...,9
-$$
+$
 
 were retained because the classifier is a **9-way number classifier**.
 
