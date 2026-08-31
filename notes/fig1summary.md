@@ -1,4 +1,43 @@
-# Figure 1 Arithmetic — Paper vs Reproduction
+# Figure 1 Arithmetic : Paper vs my Reproduction results
+What the paper actually did in Figure 1
+
+Their main temporal-decoding analysis was essentially one neuron at a time.
+
+For neuron \(j\):
+
+```math
+X_j= [\text{spike count bin 1},\text{bin 2},\ldots] 
+```
+
+and they asked:
+```math
+ X_j \rightarrow \text{LDA}\rightarrow\hat{\text{number}}. 
+ ```
+
+They repeated this separately for the neurons.
+
+Then the permutation test determined whether that individual neuron contained statistically significant number information.
+
+That's where their result
+
+```math
+ \boxed{24.8\%} 
+```
+comes from:
+
+On average across subjects, about 24.8% of neurons were classified as temporal number-coding neurons.
+
+It does not mean: 554 neurons together decode numbers with 24.8% accuracy
+
+Those are completely different quantities.
+
+their result : Some individual neurons have temporal spike patterns that contain statistically detectable information about which number was presented.
+And their Fig. 1N showed that, across individual neurons, temporal features improved decoding accuracy relative to firing rate.
+
+That's evidence that temporal structure contains number-related information at the single-neuron level.
+
+It is not evidence that the brain can reconstruct the number perfectly from one neuron
+
 
 | Analysis | What was tested? | Statistical / Analysis Method | Paper Result | Our Reproduction | Conclusion |
 |---|---|---|---:|---:|---|
