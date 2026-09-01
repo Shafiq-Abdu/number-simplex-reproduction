@@ -1,0 +1,251 @@
+
+========================================================================
+BAYESIAN ANALYSIS: TEMPORAL NUMBER-CODING PROPORTION
+========================================================================
+
+SCOPE
+-----
+This analysis concerns the proportion of neurons classified as
+number-coding using the paper-style raw permutation criterion:
+
+    raw p < 0.05
+
+It does NOT estimate the proportion of neurons that are biologically
+"truly number-coding".
+
+It also does NOT replace the separate multiple-comparison / FDR analysis.
+
+
+========================================================================
+OBSERVED DATA
+========================================================================
+
+Valid neuron-level permutation tests:
+544
+
+Neurons classified as coding using raw p < 0.05:
+160
+
+Observed pooled coding proportion:
+29.412%
+
+
+========================================================================
+SIMPLE BAYESIAN BETA-BINOMIAL MODEL
+========================================================================
+
+Model:
+
+    theta ~ Beta(alpha, beta)
+
+    K | theta ~ Binomial(N, theta)
+
+where theta represents the probability that a valid neuron is
+classified as number-coding under the raw p < 0.05 procedure.
+
+Prior:
+
+    theta ~ Beta(1, 1)
+
+Since Beta(1,1) is uniform, this prior does not favor any particular
+coding probability between 0 and 1.
+
+Posterior:
+
+    theta | data ~ Beta(161, 385)
+
+
+========================================================================
+POSTERIOR RESULTS
+========================================================================
+
+Posterior mean:
+29.487%
+
+Posterior median:
+29.462%
+
+95% Bayesian credible interval:
+[25.739%, 33.378%]
+
+
+Posterior probabilities:
+
+P(theta > 20% | data)
+    = 99.999993%
+
+P(theta > 24.8% | data)
+    = 99.330784%
+
+P(theta > 25% | data)
+    = 99.094349%
+
+P(theta > 30% | data)
+    = 39.180166%
+
+P(25% < theta < 35% | data)
+    = 98.795649%
+
+
+========================================================================
+IMPORTANT INTERPRETATION
+========================================================================
+
+The posterior is concentrated around approximately 29.5%.
+
+However, this model treats the 544 neuron-level classifications as
+exchangeable Binomial observations.
+
+Therefore, this posterior describes uncertainty in the RAW
+CLASSIFICATION RATE produced by the p < 0.05 procedure.
+
+It should NOT be interpreted as:
+
+    "Approximately 29.5% of neurons truly encode number."
+
+A neuron with p = 0.0004 and a neuron with p = 0.049 are both treated
+identically as coding = 1, while a neuron with p = 0.051 is treated as
+coding = 0.
+
+Thus, thresholding discards information about the strength of
+neuron-level evidence.
+
+
+========================================================================
+SUBJECT-LEVEL HETEROGENEITY DIAGNOSTIC
+========================================================================
+
+Pooled coding proportion:
+29.412%
+
+Unweighted mean subject coding proportion:
+29.086%
+
+Observed SD of subject coding proportions:
+4.379 percentage points
+
+Approximate SD expected from ordinary Binomial sampling alone:
+6.663 percentage points
+
+Observed between-subject variance:
+0.00191745
+
+Expected Binomial sampling variance:
+0.00444020
+
+Observed variance - expected sampling variance:
+-0.00252275
+
+Estimated additional between-subject SD after removing expected
+Binomial sampling variation:
+0.000 percentage points
+
+
+========================================================================
+EMPIRICAL BAYES BETA-BINOMIAL FIT
+========================================================================
+
+Estimated hyperparameters:
+
+    alpha_hat = 27700692.1407
+    beta_hat  = 66473774.5965
+
+Estimated population mean classification probability:
+29.414%
+
+Estimated population SD across subjects:
+0.005 percentage points
+
+Estimated concentration:
+
+    alpha_hat + beta_hat
+    = 94174466.737
+
+
+The extremely large concentration parameter indicates that the
+Beta-Binomial likelihood pushed the estimated between-subject
+heterogeneity toward approximately zero.
+
+
+========================================================================
+HETEROGENEITY INTERPRETATION
+========================================================================
+
+The observed subject-to-subject SD was:
+
+    4.379 pp
+
+whereas the approximate SD expected from Binomial sampling alone was:
+
+    6.663 pp
+
+Therefore, the observed subject variation was NOT greater than the
+variation expected under the simple Binomial model.
+
+The estimated extra variance was negative before truncation:
+
+    -0.00252275
+
+Since a variance cannot be negative, the additional between-subject
+variance estimate is effectively at the boundary:
+
+    extra between-subject variance ≈ 0
+
+This explains why the empirical-Bayes Beta-Binomial optimization
+returned extremely large alpha and beta values.
+
+This should NOT be interpreted as proof that all subjects have exactly
+the same biological coding probability.
+
+With only 11 subjects, the present data simply do not provide evidence
+for additional between-subject heterogeneity beyond the variation
+expected under this simple classification model.
+
+
+========================================================================
+RELATION TO THE FDR RESULT
+========================================================================
+
+The Bayesian Beta-Binomial analysis and the FDR analysis answer
+different questions.
+
+Bayesian raw-proportion analysis:
+
+    "How uncertain are we about the rate of raw p < 0.05
+     classifications?"
+
+FDR analysis:
+
+    "Which individual neuron-level discoveries remain sufficiently
+     strong after accounting for the large family of statistical tests?"
+
+Therefore, a stable raw coding proportion near 29% can coexist with
+zero neurons surviving BH-FDR correction.
+
+These results are not contradictory.
+
+
+========================================================================
+CURRENT CONCLUSION
+========================================================================
+
+Under the paper-style raw p < 0.05 criterion, approximately 29% of the
+valid neurons in the reproduction are classified as number-coding.
+
+A simple Bayesian Beta-Binomial model places the raw classification
+rate primarily in the range:
+
+    25.74% to 33.38%
+
+However, this analysis does not establish that the same percentage of
+neurons truly encode number.
+
+The hierarchical Beta-Binomial extension did not reveal meaningful
+additional between-subject heterogeneity and effectively collapsed
+toward the pooled model.
+
+Further Bayesian modeling of the biological "true coding" proportion
+would require modeling richer neuron-level evidence rather than only
+the binary raw p < 0.05 labels.
+
+========================================================================
