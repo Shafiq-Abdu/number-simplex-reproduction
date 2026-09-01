@@ -1,0 +1,2 @@
+analysis,n_subjects,n_valid_neurons,n_bootstraps,observed_mean_difference,observed_difference_percentage_points,bootstrap_se,bootstrap_se_percentage_points,ci_2_5,ci_97_5,ci_2_5_percentage_points,ci_97_5_percentage_points,proportion_bootstrap_means_above_zero
+Hierarchical bootstrap: subjects + neurons,11,548,10000,0.03949695636827146,3.9496956368271463,0.003938807491172039,0.3938807491172039,0.031754514143632416,0.04710028784188207,3.1754514143632417,4.710028784188207,1.0

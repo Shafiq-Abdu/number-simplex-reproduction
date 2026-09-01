@@ -1,0 +1,161 @@
+
+========================================================================
+BAYESIAN ANALYSIS: TEMPORAL vs FIRING-RATE DECODING
+========================================================================
+
+ANALYSIS
+--------
+Arithmetic task
+Subject-level comparison of temporal decoding accuracy
+versus fixed-window firing-rate (FR) decoding accuracy.
+
+Number of subjects: 11
+Total paired neurons: 548
+
+Each subject contributes one mean temporal-minus-FR
+decoding accuracy difference.
+
+
+========================================================================
+OBSERVED DATA
+========================================================================
+
+Mean temporal decoding accuracy:
+14.623%
+
+Mean firing-rate decoding accuracy:
+10.673%
+
+Observed mean temporal advantage:
+3.950 percentage points
+
+Between-subject SD:
+1.306 percentage points
+
+Subjects with temporal > FR:
+11/11
+
+
+========================================================================
+BAYESIAN MODEL
+========================================================================
+
+Subject-level differences were modeled as:
+
+    Delta_s ~ Normal(mu, sigma^2)
+
+where:
+
+    Delta_s = temporal accuracy - FR accuracy
+
+    mu = population mean temporal decoding advantage
+
+    sigma = between-subject variability
+
+
+Using the standard noninformative prior for the Normal model
+with unknown mean and variance, the marginal posterior for mu is:
+
+    mu | data ~ Student-t(
+        df = 10,
+        location = 3.950 pp,
+        scale = 0.394 pp
+    )
+
+
+========================================================================
+POSTERIOR RESULTS
+========================================================================
+
+Posterior median:
+3.950 percentage points
+
+95% Bayesian credible interval:
+[3.073, 4.827] percentage points
+
+
+Posterior probabilities:
+
+P(mu > 0 pp | data)
+    = 99.999923%
+
+P(mu > 1 pp | data)
+    = 99.998960%
+
+P(mu > 2 pp | data)
+    = 99.971187%
+
+P(mu > 3 pp | data)
+    = 98.173444%
+
+P(mu > 3.79 pp | data)
+    = 65.323%
+
+
+========================================================================
+INTERPRETATION
+========================================================================
+
+The posterior distribution is centered at approximately
+3.95 percentage points.
+
+The 95% credible interval is entirely above zero:
+
+    [3.07, 4.83] pp
+
+Under this Bayesian model, there is approximately
+99.999923% posterior probability that temporal decoding
+has a positive population-level advantage over firing-rate decoding.
+
+There is also approximately
+98.17% posterior probability that the mean temporal
+advantage exceeds 3 percentage points.
+
+The paper-reported improvement of approximately 3.79 percentage
+points lies inside our 95% credible interval.
+
+Therefore, the Bayesian analysis supports the conclusion that
+temporal decoding provides a positive and non-trivial improvement
+over firing-rate decoding across subjects.
+
+
+========================================================================
+PRIOR-SENSITIVITY ANALYSIS
+========================================================================
+
+Three zero-centered Normal priors were examined:
+
+    Very broad prior: SD = 10 pp
+    Broad prior:      SD = 5 pp
+    Skeptical prior:  SD = 2 pp
+
+Despite substantial differences among the prior distributions,
+the resulting posterior distributions were very similar and
+remained concentrated around approximately 4 percentage points.
+
+Thus, the conclusion that temporal decoding outperforms
+firing-rate decoding was not strongly sensitive to these
+reasonable prior choices.
+
+NOTE:
+The Normal-prior sensitivity calculation treated the observed
+between-subject SD as fixed. It is therefore used as a
+prior-sensitivity diagnostic rather than as the primary
+Bayesian model.
+
+
+========================================================================
+IMPORTANT SCOPE
+========================================================================
+
+This Bayesian analysis addresses the relative decoding-performance
+claim:
+
+    Temporal decoding > firing-rate decoding.
+
+It does NOT determine what proportion of individual neurons should
+be classified as number-coding and does NOT resolve the separate
+multiple-comparison/FDR question.
+
+
+========================================================================

@@ -1,0 +1,2 @@
+analysis,n_subjects,n_bootstraps,observed_mean_difference,observed_difference_percentage_points,bootstrap_se,bootstrap_se_percentage_points,ci_2_5,ci_97_5,ci_2_5_percentage_points,ci_97_5_percentage_points,proportion_bootstrap_means_above_zero
+Subject-level bootstrap: Temporal - FR,11,10000,0.03949695636827146,3.9496956368271463,0.003762487583324537,0.3762487583324537,0.031900334524401275,0.04648259489230138,3.1900334524401277,4.648259489230138,1.0
