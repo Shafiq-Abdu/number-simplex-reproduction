@@ -389,3 +389,13 @@ def analyze_neuron(
         "figure": fig,
         "axis": ax,
     }
+
+# oUTPUT:
+# from src.firing_rate_tuning import analyze_neuron
+
+# result = analyze_neuron(
+#     subject="YFS",
+#     neuron=27
+# )
+
+
