@@ -241,7 +241,6 @@ def _remove_zero_variance_features(
 # ============================================================
 # STRATIFIED CROSS-VALIDATED LDA
 # ============================================================
-
 def cv_lda_accuracy(
     X,
     y,
@@ -260,6 +259,12 @@ def cv_lda_accuracy(
         total held-out predictions
 
     Every observation is held out exactly once.
+
+    If zero-within-class-variance removal leaves no usable
+    features in a training fold, use a deterministic
+    prior-only prediction. Because the classifier uses
+    uniform class priors, all classes are tied, so the
+    smallest class label is chosen deterministically.
     """
 
     cv = StratifiedKFold(
@@ -284,6 +289,11 @@ def cv_lda_accuracy(
         y_train = y[train_idx]
         y_test = y[test_idx]
 
+        # ----------------------------------------------------
+        # Remove zero-within-class-variance features
+        # using TRAINING DATA ONLY
+        # ----------------------------------------------------
+
         (
             X_train,
             X_test,
@@ -294,27 +304,53 @@ def cv_lda_accuracy(
             y_train,
         )
 
+        # ----------------------------------------------------
+        # Degenerate case:
+        # no usable features remain
+        # ----------------------------------------------------
+
         if X_train.shape[1] == 0:
 
-            raise ValueError(
-                "All features were removed because of "
-                "zero within-class variance."
+            # No neural feature remains from which LDA
+            # can learn.
+            #
+            # With uniform class priors, all classes are tied.
+            # Use the smallest class label deterministically.
+
+            classes = np.sort(
+                np.unique(y_train)
             )
 
-        lda = LinearDiscriminantAnalysis(
-            solver="lsqr",
-            shrinkage=gamma,
-            priors=np.ones(N_CLASSES) / N_CLASSES,
-        )
+            pred = np.full(
+                len(y_test),
+                classes[0],
+                dtype=y_train.dtype,
+            )
 
-        lda.fit(
-            X_train,
-            y_train,
-        )
+        # ----------------------------------------------------
+        # Normal LDA case
+        # ----------------------------------------------------
 
-        pred = lda.predict(
-            X_test
-        )
+        else:
+
+            lda = LinearDiscriminantAnalysis(
+                solver="lsqr",
+                shrinkage=gamma,
+                priors=np.ones(N_CLASSES) / N_CLASSES,
+            )
+
+            lda.fit(
+                X_train,
+                y_train,
+            )
+
+            pred = lda.predict(
+                X_test
+            )
+
+        # ----------------------------------------------------
+        # Evaluate held-out predictions
+        # ----------------------------------------------------
 
         n_correct = int(
             np.sum(pred == y_test)
@@ -339,6 +375,10 @@ def cv_lda_accuracy(
         all_true.extend(y_test)
         all_pred.extend(pred)
 
+    # --------------------------------------------------------
+    # Pool predictions across all held-out folds
+    # --------------------------------------------------------
+
     all_true = np.asarray(all_true)
     all_pred = np.asarray(all_pred)
 
@@ -358,6 +398,10 @@ def cv_lda_accuracy(
         fold_rows
     )
 
+    # --------------------------------------------------------
+    # Return
+    # --------------------------------------------------------
+
     if return_folds:
 
         return (
@@ -368,8 +412,6 @@ def cv_lda_accuracy(
         )
 
     return pooled_accuracy
-
-
 # ============================================================
 # TEMPORAL GRID SEARCH
 # ============================================================
@@ -1484,6 +1526,131 @@ def analyze_number_decoding(
             fig_fr_null,
     }
 
+
+def permutation_test_decoding(
+    X,
+    y,
+    observed_accuracy,
+    gamma,
+    n_permutations=200,
+    n_splits=10,
+    cv_random_state=42,
+    permutation_seed=12345,
+    alpha=0.05,
+):
+    """
+    Permutation test for single-neuron numeral decoding.
+
+    Parameters
+    ----------
+    X : ndarray
+        Neural features.
+
+    y : ndarray
+        Numeral labels.
+
+    observed_accuracy : float
+        Cross-validated decoding accuracy obtained using
+        the real numeral labels.
+
+    gamma : float
+        LDA shrinkage parameter.
+
+    n_permutations : int
+        Number of label permutations.
+
+    n_splits : int
+        Number of cross-validation folds.
+
+    cv_random_state : int
+        Random seed used by cross-validation.
+
+    permutation_seed : int
+        Seed controlling label permutations.
+
+    alpha : float
+        Significance level used to classify the neuron.
+
+    Returns
+    -------
+    dict
+        Dictionary containing observed accuracy,
+        permutation distribution, p-value, and coding status.
+    """
+
+    X = np.asarray(X)
+    y = np.asarray(y)
+
+    rng = np.random.default_rng(
+        permutation_seed
+    )
+
+    null_accuracies = np.empty(
+        n_permutations,
+        dtype=float,
+    )
+
+    # --------------------------------------------------------
+    # Shuffle numeral labels
+    # --------------------------------------------------------
+
+    for p in range(n_permutations):
+
+        y_perm = rng.permutation(
+            y
+        )
+
+        null_accuracies[p] = cv_lda_accuracy(
+            X,
+            y_perm,
+            gamma=gamma,
+            n_splits=n_splits,
+            random_state=cv_random_state,
+        )
+
+    # --------------------------------------------------------
+    # Permutation p-value
+    # --------------------------------------------------------
+
+    n_equal_or_better = int(
+        np.sum(
+            null_accuracies
+            >= observed_accuracy
+        )
+    )
+
+    p_value = (
+        1 + n_equal_or_better
+    ) / (
+        n_permutations + 1
+    )
+
+    is_coding = (
+        p_value < alpha
+    )
+
+    return {
+        "observed_accuracy":
+            observed_accuracy,
+
+        "null_mean":
+            null_accuracies.mean(),
+
+        "null_std":
+            null_accuracies.std(ddof=1),
+
+        "n_equal_or_better":
+            n_equal_or_better,
+
+        "p_value":
+            p_value,
+
+        "is_coding":
+            is_coding,
+
+        "null_accuracies":
+            null_accuracies,
+    }
 
 # from src.number_decoding_analysis import analyze_number_decoding
 

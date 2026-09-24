@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 # MTL regions used in the paper
-MTL_REGIONS = {"hpc", "ent", "amy", "phc"}
+MTL_REGIONS = {"hpc", "ent", "amy", "para-hpc"}
 
 
 def analyze_neuron(
@@ -72,17 +72,31 @@ def analyze_neuron(
 
     data_dir = root / "data" / "raw" / subject / "arithmetic"
 
+    # Behavior file
     behavior_file = data_dir / "photoBehavEvents.csv"
-    spike_file = data_dir / "spikes.mat"
 
     if not behavior_file.exists():
         raise FileNotFoundError(
             f"Behavior file not found: {behavior_file}"
         )
 
-    if not spike_file.exists():
+    # Spike file
+    # Most subjects use spikes.mat.
+    # YFK, YFL, and YFM use spikesArithmetic.mat.
+    spike_candidates = [
+        data_dir / "spikes.mat",
+        data_dir / "spikesArithmetic.mat",
+    ]
+
+    spike_file = next(
+        (f for f in spike_candidates if f.exists()),
+        None
+    )
+
+    if spike_file is None:
         raise FileNotFoundError(
-            f"Spike file not found: {spike_file}"
+            f"No arithmetic spike file found in {data_dir}. "
+            f"Tried: {[f.name for f in spike_candidates]}"
         )
 
     # ---------------------------------------------------------
@@ -115,6 +129,10 @@ def analyze_neuron(
     # 3. Determine actual operand onsets
     # ---------------------------------------------------------
 
+# ---------------------------------------------------------
+# 3. Determine actual operand onsets
+# ---------------------------------------------------------
+
     operand_data = behav[
         [
             "trial",
@@ -127,26 +145,44 @@ def analyze_neuron(
         ]
     ].copy()
 
+    # Special case:
+    # For YFR and YFS, the operation sign was always presented
+    # as the second stimulus (Cue2 position).
+    #
+    # Therefore:
+    #   operand 1 -> first presentation  -> tCue1
+    #   operation -> second presentation -> tCue2
+    #   operand 2 -> third presentation  -> tCue3
+    #
+    # For all other subjects, use operationFirst.
+
+    if subject in {"YFR", "YFS"}:
+
+        operand_data["operand1_onset"] = operand_data["tCue1"]
+        operand_data["operand2_onset"] = operand_data["tCue3"]
+
+    else:
+
     # operationFirst = 0:
-    # operand1 -> Cue1
-    # operand2 -> Cue2
+    # operand1 -> first presentation
+    # operand2 -> second presentation
     #
     # operationFirst = 1:
-    # operation -> Cue1
-    # operand1 -> Cue2
-    # operand2 -> Cue3
+    # operation -> first presentation
+    # operand1 -> second presentation
+    # operand2 -> third presentation
 
-    operand_data["operand1_onset"] = np.where(
-        operand_data["operationFirst"] == 1,
-        operand_data["tCue2"],
-        operand_data["tCue1"],
-    )
+        operand_data["operand1_onset"] = np.where(
+            operand_data["operationFirst"] == 1,
+            operand_data["tCue2"],
+            operand_data["tCue1"],
+        )
 
-    operand_data["operand2_onset"] = np.where(
-        operand_data["operationFirst"] == 1,
-        operand_data["tCue3"],
-        operand_data["tCue2"],
-    )
+        operand_data["operand2_onset"] = np.where(
+            operand_data["operationFirst"] == 1,
+            operand_data["tCue3"],
+            operand_data["tCue2"],
+        )
 
     # ---------------------------------------------------------
     # 4. Pool operand 1 and operand 2 presentations
@@ -182,7 +218,18 @@ def analyze_neuron(
 
     with h5py.File(spike_file, "r") as f:
 
-        g = f["spikes"]
+    # Different subjects use different MATLAB variable names
+        if "spikes" in f:
+            g = f["spikes"]
+
+        elif "spikesArithmetic" in f:
+            g = f["spikesArithmetic"]
+
+        else:
+            raise KeyError(
+                f"No recognized spike matrix found in {spike_file}. "
+                f"Available keys: {list(f.keys())}"
+            )
 
         data = g["data"][:]
         ir = g["ir"][:]
