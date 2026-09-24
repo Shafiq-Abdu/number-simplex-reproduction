@@ -1526,6 +1526,155 @@ def analyze_number_decoding(
             fig_fr_null,
     }
 
+def cv_lda_per_number_accuracy(
+    X,
+    y,
+    gamma,
+    n_splits=10,
+    random_state=42,
+):
+    """
+    Cross-validated LDA decoding with per-number held-out accuracy.
+
+    Returns
+    -------
+    overall_accuracy : float
+        Pooled held-out accuracy across all trials.
+
+    per_number_accuracy : dict
+        Held-out decoding accuracy separately for numbers 1,...,9.
+
+    y_true_all : ndarray
+        True labels for all held-out trials.
+
+    y_pred_all : ndarray
+        Cross-validated predictions for all held-out trials.
+    """
+
+    import numpy as np
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+    from sklearn.model_selection import StratifiedKFold
+
+    X = np.asarray(X)
+    y = np.asarray(y)
+
+    cv = StratifiedKFold(
+        n_splits=n_splits,
+        shuffle=True,
+        random_state=random_state,
+    )
+
+    y_true_all = []
+    y_pred_all = []
+
+    for train_idx, test_idx in cv.split(X, y):
+
+        X_train = X[train_idx]
+        X_test = X[test_idx]
+
+        y_train = y[train_idx]
+        y_test = y[test_idx]
+
+        # --------------------------------------------------
+        # Same zero-within-class-variance feature removal
+        # convention used in our reproduction
+        # --------------------------------------------------
+
+        keep = np.zeros(X_train.shape[1], dtype=bool)
+
+        for j in range(X_train.shape[1]):
+
+            class_variances = []
+
+            for c in np.unique(y_train):
+
+                values = X_train[y_train == c, j]
+
+                if len(values) > 1:
+                    class_variances.append(
+                        np.var(values, ddof=1)
+                    )
+                else:
+                    class_variances.append(0.0)
+
+            # Keep feature if at least one class
+            # has non-zero within-class variance
+            keep[j] = np.any(
+                np.asarray(class_variances) > 0
+            )
+
+        X_train_use = X_train[:, keep]
+        X_test_use = X_test[:, keep]
+
+        # --------------------------------------------------
+        # Rare case: no usable features
+        #
+        # Keep same fallback convention we used previously.
+        # --------------------------------------------------
+
+        if X_train_use.shape[1] == 0:
+
+            classes = np.sort(np.unique(y_train))
+
+            y_pred = np.full(
+                len(y_test),
+                classes[0],
+                dtype=y_train.dtype,
+            )
+
+        else:
+
+            classes = np.sort(np.unique(y_train))
+
+            lda = LinearDiscriminantAnalysis(
+                solver="lsqr",
+                shrinkage=gamma,
+                priors=np.ones(len(classes)) / len(classes),
+            )
+
+            lda.fit(X_train_use, y_train)
+
+            y_pred = lda.predict(X_test_use)
+
+        y_true_all.extend(y_test)
+        y_pred_all.extend(y_pred)
+
+    # ------------------------------------------------------
+    # Combine held-out predictions
+    # ------------------------------------------------------
+
+    y_true_all = np.asarray(y_true_all)
+    y_pred_all = np.asarray(y_pred_all)
+
+    overall_accuracy = np.mean(
+        y_true_all == y_pred_all
+    )
+
+    # ------------------------------------------------------
+    # Accuracy separately for numbers 1,...,9
+    # ------------------------------------------------------
+
+    per_number_accuracy = {}
+
+    for number in range(1, 10):
+
+        idx = y_true_all == number
+
+        if np.sum(idx) == 0:
+            per_number_accuracy[number] = np.nan
+        else:
+            per_number_accuracy[number] = np.mean(
+                y_pred_all[idx] == y_true_all[idx]
+            )
+
+    return (
+        overall_accuracy,
+        per_number_accuracy,
+        y_true_all,
+        y_pred_all,
+    )
+
+
 
 def permutation_test_decoding(
     X,

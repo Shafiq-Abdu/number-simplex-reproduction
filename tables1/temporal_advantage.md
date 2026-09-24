@@ -55,3 +55,59 @@ This provides statistical evidence for a temporal decoding advantage.
 see fig1n reproduced
 
 ==================================================
+
+
+| Subject   | Neurons tested | FR-coding | TC-coding |      FR coding % |       TC coding % |
+| --------- | -------------: | --------: | --------: | ---------------: | ----------------: |
+| YFF       |             37 |         1 |        11 |            2.70% |            29.73% |
+| YFI       |             29 |         2 |        10 |            6.90% |            34.48% |
+| YFJ       |             45 |         2 |        15 |            4.44% |            33.33% |
+| YFK       |             44 |         2 |        17 |            4.55% |            38.64% |
+| YFL       |             56 |         1 |         9 |            1.79% |            16.07% |
+| YFM       |             61 |         2 |        16 |            3.28% |            26.23% |
+| YFP       |             43 |         3 |         9 |            6.98% |            20.93% |
+| YFR       |             64 |         3 |        15 |            4.69% |            23.44% |
+| YFS       |             59 |         4 |        20 |            6.78% |            33.90% |
+| YFT       |             52 |         4 |        13 |            7.69% |            25.00% |
+| YFU       |             62 |         2 |        25 |            3.23% |            40.32% |
+| **Total** |        **552** |    **26** |   **160** | **4.71% pooled** | **28.99% pooled** |
+
+
+======================
+
+
+========================================
+ANOVA: REGION EFFECT
+========================================
+
+    ANOVA MARGINAL TESTS: DFMETHOD = 'RESIDUAL'
+
+    Term                    FStat     DF1    DF2    pValue    
+    {'(Intercept)' }        35.105    1      548    5.5234e-09
+    {'region_clean'}        2.1673    3      548      0.090875
+
+========================================
+FINAL FIGURE 1Q RESULT
+========================================
+    FStat     DF1    DF2     pValue 
+    ______    ___    ___    ________
+
+    2.1673     3     548    0.090875
+
+
+Final result:
+Region main effect: F(3,548) = 2.1673, p = 0.090875
+
+Our null hypothesis is:
+
+$$ H_0: \text{the probability of being a TC numeral-coding neuron does not differ by MTL region.} $$
+
+We obtained
+
+$$ p=0.0909. $$
+
+Since
+
+$$ 0.0909>0.05, $$
+
+we fail to reject \(H_0\).
