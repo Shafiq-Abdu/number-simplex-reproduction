@@ -1,0 +1,2 @@
+region,n_pairs,mean_FR_accuracy_pct,mean_TC_accuracy_pct,FR_coding_pairs,FR_coding_proportion_pct,TC_coding_pairs,TC_coding_proportion_pct,mean_FR_gain_vs_best_pp,mean_TC_gain_vs_best_pp,FR_beats_best_pct,TC_beats_best_pct,TC_noncoding_plus_noncoding_to_coding
+hpc,630,11.441677588466574,16.75695354594437,22,3.492063492063492,229,36.34920634920635,-0.7557885539536908,-0.7892820736857443,33.33333333333333,29.365079365079367,56

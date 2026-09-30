@@ -111,3 +111,19 @@ Since
 $$ 0.0909>0.05, $$
 
 we fail to reject \(H_0\).
+
+
+======================================
+
+
+PAIRING 
+SUBJECT 1 :  yff
+For YFF, we now know:
+- All pairs: pairing does not generally beat the better constituent.
+- Coding + coding: mean gain −1.04 pp.
+- Coding + noncoding: mean gain −1.49 pp.
+- Noncoding + noncoding: mean gain only −0.22 pp.
+- Yet 63/351 = 17.95% of NC+NC pairs become coding.
+- Those 63 selected pairs show +1.82 pp over their better constituent.
+- Some near-threshold noncoding neurons, such as 34, 33, and 41, repeatedly participate in successful pairs.
+- YFF is overwhelmingly HPC, so it tells us almost nothing about regional differences.
