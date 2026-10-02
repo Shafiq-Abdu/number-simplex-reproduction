@@ -192,6 +192,8 @@ I also tested a **nonlinear decoder** as an exploratory comparison.
 
 ---
 
+
+
 ## Main Observation
 
 The three linear classifiers produced broadly similar decoding behavior.
@@ -207,6 +209,9 @@ clearly outperformed LDA.
 
 The nonlinear decoder I tested also did **not** produce a clear improvement
 over the linear decoders.
+
+![alt text](image-3.png)
+
 
 ---
 
@@ -229,8 +234,6 @@ the main reproduction.
 
 ## Motivation
 
-After analyzing individual neurons, I asked whether **combining two neurons**
-could reveal additional number information.
 
 For each subject, I considered all possible pairs of neurons and compared
 the pair's temporal decoding performance with the decoding performance of
@@ -272,6 +275,18 @@ $$
 The average paired accuracy was somewhat higher than the average
 single-neuron accuracy.
 
+| Question | FR | Temporal | What it tells us |
+|---|---:|---:|---|
+| Average single-neuron accuracy | 10.19% | 15.55% | Baseline |
+| Average pair accuracy | 11.42% | 16.75% | Pairs are higher on average |
+| Difference in averages | **+1.23 pp** | **+1.20 pp** | Suggests a population-level benefit |
+| Pair beats its **better constituent neuron** | 33.33% | 28.83% | Only a minority of pairs |
+| Mean pair gain over better constituent | −0.75 pp | −0.79 pp | Typical pair does not beat its strongest member |
+| Single coding proportion | 2.70% | 27.03% | |
+| Pair coding proportion | 3.45% | **36.04%** | More temporal pairs pass the permutation criterion |
+| Both noncoding → coding pair | 15 | **63** | Particularly interesting joint-decoding cases |
+
+
 However, the more meaningful comparison is between each pair and the
 **better neuron already contained in that pair**.
 
@@ -291,6 +306,21 @@ the better neuron from that pair.
 An interesting observation was that some individually non-significant
 neurons became significant when combined.
 
+The denominator is only the NC + NC pairs, not all neuron pairs.
+For YFF, we had 666 total pairs. Among those, 351 pairs were pairs in which both neurons were individually non-coding. Then we asked:
+Of these 351 NC+NC pairs, how many became significantly number-coding when combined?
+
+We found 63:
+$$
+\frac{63}{351}\times100
+=
+\boxed{17.95\%}.
+$$
+So:
+$$
+\boxed{\text{YFF: }63/351=17.95\%}
+$$
+
 For YFF,
 
 $$
@@ -309,6 +339,101 @@ $$
 This suggests that some neurons that individually contain insufficient
 information for significant number decoding may contain **complementary
 information when combined**.
+
+![alt text](image-2.png)
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>neuron</th>
+      <th>TC_accuracy_pct</th>
+      <th>TC_p</th>
+      <th>successful_coding_pairs</th>
+      <th>success_rate_pct</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>34</td>
+      <td>18.349</td>
+      <td>0.055</td>
+      <td>14</td>
+      <td>53.846</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>33</td>
+      <td>17.431</td>
+      <td>0.065</td>
+      <td>13</td>
+      <td>50.000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>41</td>
+      <td>17.431</td>
+      <td>0.070</td>
+      <td>13</td>
+      <td>50.000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>36</td>
+      <td>16.514</td>
+      <td>0.080</td>
+      <td>10</td>
+      <td>38.462</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10</td>
+      <td>15.596</td>
+      <td>0.134</td>
+      <td>9</td>
+      <td>34.615</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>17</td>
+      <td>16.514</td>
+      <td>0.075</td>
+      <td>9</td>
+      <td>34.615</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>16</td>
+      <td>14.679</td>
+      <td>0.179</td>
+      <td>0</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>43</td>
+      <td>11.009</td>
+      <td>0.617</td>
+      <td>0</td>
+      <td>0.000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 ---
 
