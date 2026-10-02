@@ -34,7 +34,6 @@ whether a neuron belongs to a **null/non-coding population** or a
 
 
 $$
-
 \textbf{Population proportion:}\qquad
 &\pi\sim\operatorname{Beta}(1,1)
 \\[4pt]
@@ -57,7 +56,6 @@ $$
 &P(Z_i=1\mid D)
 \\
 &p(\pi\mid D)
-
 $$
 
 
