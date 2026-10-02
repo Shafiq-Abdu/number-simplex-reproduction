@@ -1,6 +1,6 @@
 # Weekly Research Update
 ## Number Representation / Number-Simplex Project
-### Advisor Meeting — October 2, 2026
+###  Meeting — October 2, 2026
 
 This week I worked in four directions:
 
@@ -31,6 +31,40 @@ whether a neuron belongs to a **null/non-coding population** or a
 **number-informative population**.
 
 ---
+
+
+$$ 
+\boxed{
+\begin{aligned}
+\textbf{Population proportion:}\qquad
+&\pi\sim\operatorname{Beta}(1,1)
+\\[4pt]
+\textbf{Latent coding state:}\qquad
+&Z_i\mid\pi\sim\operatorname{Bernoulli}(\pi)
+\\[4pt]
+\textbf{Non-coding model:}\qquad
+&A_i\mid Z_i=0\sim f_{0i}
+&&\text{(estimated from label shuffles)}
+\\[4pt]
+\textbf{Coding model:}\qquad
+&A_i\mid Z_i=1\sim f_1
+&&\text{(signal distribution to be inferred)}
+\\[4pt]
+\textbf{Observed-data likelihood:}\qquad
+&p(A_i\mid\pi)
+=(1-\pi)f_{0i}(A_i)+\pi f_1(A_i)
+\\[4pt]
+\textbf{Posterior outputs:}\qquad
+&P(Z_i=1\mid D)
+\\
+&p(\pi\mid D)
+\end{aligned}
+}
+$$ 
+T
+![alt text](image.png)
+
+
 
 ## Initial $F_0/F_1$ Idea
 
@@ -107,7 +141,7 @@ not extended it to all subjects.
 
 ---
 
-## Current Status / Question for Advisor
+## Current Status / Question 
 
 This analysis is still preliminary.
 
@@ -184,7 +218,7 @@ not obviously an artifact of one particular linear classifier.
 Therefore, at this point I do not see a strong reason to replace LDA for
 the main reproduction.
 
-### Question for advisor
+### Question 
 
 > **Is this classifier comparison sufficient as a robustness check, or is
 > there another decoder/model comparison that would be informative?**
@@ -374,7 +408,7 @@ A potentially more interesting question is:
 
 So far this analysis has only been performed for two subjects.
 
-### Question for advisor
+### Question 
 
 > **Is this complementary-information effect worth extending across all
 > subjects, or should I stop the pairwise analysis here?**
@@ -888,7 +922,7 @@ This will be my next Figure 2 step.
 
 ---
 
-# Main Questions for Advisor
+# Main Questions 
 
 ## Question 1 — Bayesian Analysis
 
