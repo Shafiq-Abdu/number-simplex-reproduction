@@ -33,7 +33,7 @@ whether a neuron belongs to a **null/non-coding population** or a
 ---
 
 
-$$ 
+\[
 \boxed{
 \begin{aligned}
 \textbf{Population proportion:}\qquad
@@ -60,8 +60,10 @@ $$
 &p(\pi\mid D)
 \end{aligned}
 }
-$$ 
-T
+\] 
+
+
+
 ![alt text](image.png)
 
 ![alt text](image-1.png)
