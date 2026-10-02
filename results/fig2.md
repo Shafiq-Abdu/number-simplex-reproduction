@@ -64,7 +64,7 @@ $$
 T
 ![alt text](image.png)
 
-
+![alt text](image-1.png)
 
 ## Initial $F_0/F_1$ Idea
 
