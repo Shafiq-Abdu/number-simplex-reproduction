@@ -34,7 +34,7 @@ implementation.
 """
 
 from pathlib import Path
-
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1674,7 +1674,22 @@ def cv_lda_per_number_accuracy(
         y_pred_all,
     )
 
+def _permutation_decoding_worker(args):
+    """
+    Evaluate one permuted-label decoding accuracy.
 
+    Defined at module level so it can be used safely by
+    multiprocessing on both Windows and Linux.
+    """
+    X, y_perm, gamma, n_splits, cv_random_state = args
+
+    return cv_lda_accuracy(
+        X,
+        y_perm,
+        gamma=gamma,
+        n_splits=n_splits,
+        random_state=cv_random_state,
+    )
 
 def permutation_test_decoding(
     X,
@@ -1686,6 +1701,7 @@ def permutation_test_decoding(
     cv_random_state=42,
     permutation_seed=12345,
     alpha=0.05,
+    n_jobs=1,
 ):
     """
     Permutation test for single-neuron numeral decoding.
@@ -1734,28 +1750,58 @@ def permutation_test_decoding(
         permutation_seed
     )
 
-    null_accuracies = np.empty(
-        n_permutations,
-        dtype=float,
-    )
-
-    # --------------------------------------------------------
-    # Shuffle numeral labels
+        # --------------------------------------------------------
+    # Generate permutations sequentially.
+    #
+    # This preserves the exact permutation sequence produced
+    # by permutation_seed, regardless of the number of workers.
     # --------------------------------------------------------
 
-    for p in range(n_permutations):
+    permuted_labels = [
+        rng.permutation(y)
+        for _ in range(n_permutations)
+    ]
 
-        y_perm = rng.permutation(
-            y
-        )
-
-        null_accuracies[p] = cv_lda_accuracy(
+    worker_args = [
+        (
             X,
             y_perm,
-            gamma=gamma,
-            n_splits=n_splits,
-            random_state=cv_random_state,
+            gamma,
+            n_splits,
+            cv_random_state,
         )
+        for y_perm in permuted_labels
+    ]
+
+    # --------------------------------------------------------
+    # Evaluate permutation accuracies
+    # --------------------------------------------------------
+
+    if n_jobs == 1:
+
+        null_accuracies = np.asarray(
+            [
+                _permutation_decoding_worker(args)
+                for args in worker_args
+            ],
+            dtype=float,
+        )
+
+    else:
+
+        with ProcessPoolExecutor(
+            max_workers=n_jobs
+        ) as executor:
+
+            null_accuracies = np.asarray(
+                list(
+                    executor.map(
+                        _permutation_decoding_worker,
+                        worker_args,
+                    )
+                ),
+                dtype=float,
+            )
 
     # --------------------------------------------------------
     # Permutation p-value
