@@ -1,7 +1,7 @@
 # src/paired_neuron_analysis_fast.py
 
 from itertools import combinations
-
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 
@@ -600,14 +600,35 @@ def analyze_cached_pair(
 # ============================================================
 # RUN ALL PAIRS FOR SUBJECT
 # ============================================================
+def _analyze_pair_worker(args):
+    """
+    Worker for parallel neuron-pair analysis.
+    """
+    cache, neuron_1, neuron_2 = args
+
+    return analyze_cached_pair(
+        cache,
+        neuron_1,
+        neuron_2,
+    )
+
+
 
 def analyze_all_cached_pairs(
     cache,
     save_path=None,
     save_every=25,
+    n_jobs=1,
 ):
     """
     Analyze all unique unordered neuron pairs.
+
+    Parameters
+    ----------
+    n_jobs : int
+        Number of worker processes.
+        n_jobs=1 reproduces the original sequential behavior.
+        n_jobs>1 parallelizes across neuron pairs.
 
     Optionally saves checkpoint CSV every `save_every` pairs.
     """
@@ -625,18 +646,49 @@ def analyze_all_cached_pairs(
         f"Running {total_pairs} unique pairs..."
     )
 
+        # ========================================================
+    # RUN PAIRS
+    # ========================================================
+
+    if n_jobs == 1:
+
+        pair_results = [
+            analyze_cached_pair(
+                cache,
+                n1,
+                n2,
+            )
+            for n1, n2 in pairs
+        ]
+
+    else:
+
+        worker_args = [
+            (cache, n1, n2)
+            for n1, n2 in pairs
+        ]
+
+        with ProcessPoolExecutor(
+            max_workers=n_jobs
+        ) as executor:
+
+            pair_results = list(
+                executor.map(
+                    _analyze_pair_worker,
+                    worker_args,
+                )
+            )
+
+    # ========================================================
+    # PROGRESS + CHECKPOINT SAVING
+    # ========================================================
+
     results = []
 
-    for k, (n1, n2) in enumerate(
-        pairs,
+    for k, ((n1, n2), result) in enumerate(
+        zip(pairs, pair_results),
         start=1,
     ):
-
-        result = analyze_cached_pair(
-            cache,
-            n1,
-            n2,
-        )
 
         results.append(result)
 
