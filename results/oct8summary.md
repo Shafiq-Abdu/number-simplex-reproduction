@@ -163,18 +163,7 @@ $$
   - approximately **13% of noncoding + noncoding pairs** become statistically significant when considered jointly.
 - Therefore, the paired-neuron analysis reveals **heterogeneity across neuron pairs** that is not visible from the population-average accuracy alone.
 
-### Important Caution
 
-- Here, **"noncoding" does not mean that the neuron contains absolutely no numerical information**.
-- It only means that the neuron did not pass the statistical significance criterion used in the single-neuron analysis.
-- Therefore, the observation
-
-$$
-\text{noncoding} + \text{noncoding} \rightarrow \text{coding pair}
-$$
-
-should **not yet be interpreted as proof of neural synergy**.
-- A more specific statistical analysis would be required to establish whether the pair contains genuinely synergistic or complementary information.
 
 ---
 
