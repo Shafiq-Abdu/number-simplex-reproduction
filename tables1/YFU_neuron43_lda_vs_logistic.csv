@@ -1,0 +1,2 @@
+subject,neuron,region,lda_best_bin_ms,lda_best_gamma,lda_accuracy,lda_accuracy_percent,lda_null_mean_percent,lda_p_value,lda_coding,logistic_best_bin_ms,logistic_accuracy,logistic_accuracy_percent,logistic_null_mean_percent,logistic_p_value,logistic_coding
+YFU,43,hpc,150,0.2,0.16396761133603238,16.39676113360324,11.194331983805668,0.009950248756218905,True,150,0.15991902834008098,15.991902834008098,12.288461538461538,0.009950248756218905,True
