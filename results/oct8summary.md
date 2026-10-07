@@ -178,7 +178,6 @@ should **not yet be interpreted as proof of neural synergy**.
 
 ---
 
-### 7. Take-Home Message
 
 > **Across the 10 completed subjects and 12,209 neuron pairs, combining two neurons does not improve temporal decoding on average relative to the better constituent neuron. However, the effect is heterogeneous: about 27% of pairs improve, and about 13% of pairs formed from two individually non-significant neurons become significant when decoded jointly. Thus, pairing is not universally advantageous for decoding accuracy, but some neuron pairs reveal jointly detectable information that is not apparent from individual-neuron significance alone.**
 
