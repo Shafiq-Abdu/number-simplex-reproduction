@@ -119,11 +119,12 @@ I separated the pairs into three categories based on the temporal-coding signifi
 - Of these, **809 pairs** became statistically significant when the two neurons were decoded jointly.
 
 
-\[
-  \frac{809}{6062}\times100
-=
+$$
+\frac{809}{6062}\times100
+$$
+$$
 \boxed{13.35\%}
-\]
+$$
 
 - Thus, two neurons that individually fail the coding significance criterion can sometimes produce a significant decoder when considered jointly.
 - However, their mean decoding gain relative to the better individual neuron is still slightly negative:
