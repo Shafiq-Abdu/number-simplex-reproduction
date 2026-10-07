@@ -3,13 +3,10 @@
 ### 1. Parallel Computing Setup
 
 - Last week, I had completed the paired-neuron analysis only for a small number of subjects.
-- Running the analysis sequentially for all subjects was computationally expensive because:
-  - every possible pair of neurons is analyzed;
-  - each pair requires cross-validated decoding;
-  - permutation testing is performed for each pair.
+
 - To scale the analysis, I learned how to use the UH research computing environment:
-  - connected to the UH server through SSH;
-  - learned how the available compute nodes work;
+  - connected to the UH server through SSH; (username@login.math.uh.edu)
+  - learned how the available compute nodes work; 
   - used separate compute nodes to run different subjects in parallel;
   - used `tmux` sessions so that analyses continued running after disconnecting from SSH.
 - This allowed the subject-level analyses to run simultaneously rather than processing all subjects sequentially.
@@ -121,11 +118,12 @@ I separated the pairs into three categories based on the temporal-coding signifi
 - There were **6,062** pairs in which neither constituent neuron was individually classified as temporally coding.
 - Of these, **809 pairs** became statistically significant when the two neurons were decoded jointly.
 
-$$
-\frac{809}{6062}\times100
+
+\[
+  \frac{809}{6062}\times100
 =
 \boxed{13.35\%}
-$$
+\]
 
 - Thus, two neurons that individually fail the coding significance criterion can sometimes produce a significant decoder when considered jointly.
 - However, their mean decoding gain relative to the better individual neuron is still slightly negative:
