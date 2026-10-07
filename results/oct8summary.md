@@ -122,8 +122,9 @@ I separated the pairs into three categories based on the temporal-coding signifi
 $$
 \frac{809}{6062}\times100
 $$
+
 $$
-\boxed{13.35\%}
+{13.35\%}
 $$
 
 - Thus, two neurons that individually fail the coding significance criterion can sometimes produce a significant decoder when considered jointly.
