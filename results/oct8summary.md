@@ -360,6 +360,8 @@ The majority of neurons lie above the $y=x$ reference line, consistent with the 
 
 ---
 
+
+![alt text](image-7.png)
 # 7. Subject-Level Comparison
 
 I next checked whether the Logistic advantage was driven by only a few subjects.
@@ -435,6 +437,8 @@ $$
 
 # 9. Number-Coding Neurons
 
+
+![alt text](image-8.png)
 The next question was whether higher decoding accuracy also means that Logistic Regression identifies more statistically significant number-coding neurons.
 
 It does **not**.
@@ -691,9 +695,9 @@ $$
 
 ---
 
-# Final Conclusion
+# !
 
-> [!IMPORTANT]
+
 > **LDA vs Logistic Regression**
 >
 > Across $554$ MTL neurons from $11$ subjects, Logistic Regression produced higher absolute single-neuron number-decoding accuracy than LDA:
@@ -731,3 +735,146 @@ $$
 > $$
 >
 > **Current conclusion:** Logistic Regression gives better **absolute decoding accuracy**, whereas LDA gives slightly stronger **separation from its own permutation-null baseline** and identifies more significant number-coding neurons. Therefore, the two decoders are not interchangeable: decoder choice affects both decoding performance and which neurons are identified as carrying significant number information.
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lda_best_bin_ms</th>
+      <th>logistic_best_bin_ms</th>
+      <th>n_neurons</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>60</td>
+      <td>60</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>60</td>
+      <td>75</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>60</td>
+      <td>90</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>60</td>
+      <td>100</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>60</td>
+      <td>150</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>90</th>
+      <td>900</td>
+      <td>180</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>900</td>
+      <td>225</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>900</td>
+      <td>300</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>900</td>
+      <td>450</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>900</td>
+      <td>900</td>
+      <td>16</td>
+    </tr>
+  </tbody>
+</table>
+<p>95 rows × 3 columns</p>
+</div>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Comparison</th>
+      <th>Number of neurons</th>
+      <th>Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Same best bin size</td>
+      <td>163</td>
+      <td>29.42</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Different best bin size</td>
+      <td>391</td>
+      <td>70.58</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Total</td>
+      <td>554</td>
+      <td>100.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
