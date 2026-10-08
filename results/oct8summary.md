@@ -277,17 +277,16 @@ $$
 The mean difference in raw decoding accuracy was:
 
 $$
-\Delta_{\mathrm{acc}}
+\Delta_{\text{acc}}
 =
-\mathrm{Accuracy}_{\mathrm{Logistic}}
+\text{Accuracy}_{\text{Logistic}}
 -
-\mathrm{Accuracy}_{\mathrm{LDA}}
+\text{Accuracy}_{\text{LDA}}
 $$
 
+
 $$
-\boxed{
-\Delta_{\mathrm{acc}} = +2.15 \text{ percentage points}
-}
+\boxed{\Delta_{\text{acc}} = +2.15\text{ percentage points}}
 $$
 
 The median neuron-level difference was:
