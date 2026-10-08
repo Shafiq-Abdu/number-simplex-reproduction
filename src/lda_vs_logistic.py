@@ -1037,7 +1037,7 @@ def compare_lda_logistic_subject(
             if (
                 mtl_only
                 and region
-                not in {"hpc", "ec", "amy", "phc"}
+                not in {"hpc", "ent", "amy", "para-hpc"}
             ):
 
                 print(
