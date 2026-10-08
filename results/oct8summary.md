@@ -291,13 +291,13 @@ $$
 
 The median neuron-level difference was:
 
-$$
+\[]
 \boxed{
 \mathrm{Median}(\Delta_{\mathrm{acc}})
 =
 +1.75 \text{ percentage points}
 }
-$$
+\]
 
 
 
