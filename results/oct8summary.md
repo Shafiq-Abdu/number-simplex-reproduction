@@ -858,3 +858,304 @@ $$
   </tbody>
 </table>
 </div>
+
+
+-------
+------
+
+# Questions for Discussion — Connecting Our Analysis with the Reviewer Comments
+
+## Current Stage
+
+- Completed the main **Figure 1 single-neuron analysis**:
+  - firing-rate and temporal number coding
+  - cross-validation
+  - permutation tests
+  - number-coding neurons
+
+- Started the **population geometry analysis**:
+  - constructed the population feature matrix from temporal LDA components
+  - examined number centroids
+  - reproduced the large transition-angle / approximately $120^\circ$ behavior
+  - currently interpreting the representation as **simplex-like**, rather than concluding that it is uniquely a simplex
+
+- Additional analyses:
+  - paired-neuron analysis across subjects
+  - LDA vs. Logistic Regression comparison
+
+---
+
+# 1. Should hyperparameters be re-selected inside every permutation?
+
+### Question
+
+In the current permutation analysis, we:
+
+1. Find the best temporal bin size and LDA shrinkage $\gamma$ using the real labels.
+2. Keep those hyperparameters fixed.
+3. Shuffle the number labels and construct the null distribution.
+
+The reviewer pointed out that this may give an optimistic estimate of significance.
+
+> **Should we re-select the best bin size and $\gamma$ independently inside every permutation?**
+
+### Note
+
+The stricter procedure would be:
+
+- Real data $\rightarrow$ optimize bin size and $\gamma$.
+- Each shuffled dataset $\rightarrow$ independently optimize bin size and $\gamma$ again.
+- Compare the optimized real-data accuracy against the optimized null distribution.
+
+This would reproduce the **entire model-selection procedure under the null hypothesis**.
+
+---
+
+# 2. Then what is the purpose of the best bin size from the real data?
+
+If we re-select the best bin size independently inside every permutation:
+
+> **What is the role of the original best bin size obtained from cross-validation?**
+
+### Note
+
+My current understanding:
+
+- The real-data best bin identifies the temporal resolution that best represents number information for that neuron.
+- It can still be reported and used for the final fitted representation.
+- But it may not need to remain fixed when constructing the permutation null distribution.
+
+---
+
+# 3. Could supervised LDA itself contribute to the simplex-like geometry?
+
+The reviewer raised an important concern:
+
+> **Because LDA is supervised and explicitly maximizes class separation, could it push the nine number centroids toward affine independence?**
+
+### What I tried
+
+I compared **LDA vs. multinomial Logistic Regression** across all $554$ neurons.
+
+- Logistic Regression had slightly higher mean decoding accuracy.
+- LDA identified a larger proportion of significant number-coding neurons.
+- Only $163/554$ neurons selected the same optimal temporal bin.
+- $391/554 \approx 70.6\%$ selected different optimal bins.
+
+### Questions
+
+> **Can we construct a discriminative subspace from multinomial Logistic Regression and repeat the population geometry analysis?**
+
+> **If the simplex-like geometry remains similar under a different decoder, would that provide stronger evidence that the geometry is not specific to LDA?**
+
+---
+
+# 4. Should we repeat the geometry using an unsupervised representation?
+
+Logistic Regression is still supervised.
+
+The reviewer specifically suggested repeating the pipeline using an **unsupervised method such as PCA**.
+
+### Question
+
+> **Should we construct the population representation using PCA instead of supervised LDA and test whether the same simplex-like geometry remains?**
+
+### Possible comparison
+
+- LDA representation — supervised
+- Logistic-derived representation — supervised
+- PCA representation — unsupervised
+
+The main question would be:
+
+> **Does the population geometry remain similar when the feature-extraction method does not know the number labels?**
+
+---
+
+# 5. What is the role of the "number-coding neuron" criterion?
+
+This is something I am still unclear about.
+
+We define a significant number-coding neuron using approximately
+
+$p < 0.05$.
+
+However, for the population feature matrix / simplex analysis, temporal components are retained using the more lenient criterion
+
+$p \leq 0.125$.
+
+### Questions
+
+> **What is the main purpose of identifying the proportion of $p<0.05$ number-coding neurons if the population geometry is constructed using a different $p\leq0.125$ inclusion criterion?**
+
+> **Why is $p\leq0.125$ appropriate for constructing the population feature matrix?**
+
+### Possible robustness test
+
+Could we repeat the geometry using:
+
+- $p < 0.05$
+- $p \leq 0.125$
+- possibly all neurons/components
+
+and determine whether the geometric conclusions are stable?
+
+---
+
+# 6. Is the approximately $120^\circ$ transition angle specific to a simplex?
+
+We reproduced the large transition-angle behavior and currently describe it as **simplex-like**.
+
+However, the reviewers questioned whether this property uniquely identifies a simplex.
+
+### Question
+
+> **Could other high-dimensional geometries also produce transition angles close to the observed values?**
+
+### Possible controls
+
+Run the same transition-angle analysis on:
+
+- regular simplex
+- irregular simplex
+- random high-dimensional Gaussian points
+- covariance-matched random representations
+- curved low-dimensional manifolds
+- mixed-selectivity populations
+- number-tuned populations
+- random Poisson neurons
+- randomized number ordering
+
+The important question is:
+
+> **What observation would actually distinguish a simplex from a generic high-dimensional representation?**
+
+---
+
+# 7. Should we compare against number-tuned / curved representations?
+
+So far, the main conceptual comparison has been:
+
+**Number line vs. simplex**
+
+The reviewers pointed out that this may not be the strongest biological comparison.
+
+Populations of **number-tuned neurons** could naturally generate curved trajectories in representational space.
+
+### Question
+
+> **Should we compare the observed neural geometry against simulated number-tuned populations and other curved manifolds rather than only against a linear number-line model?**
+
+### Possible hypotheses
+
+Instead of only
+
+**Number line vs. simplex**
+
+we could consider:
+
+- number line
+- number-tuned curved manifold
+- generic high-dimensional representation
+- mixed-selectivity representation
+- random high-dimensional representation
+- simplex-like representation
+
+---
+
+# 8. Can Bayesian analysis complement the permutation definition of number coding?
+
+Currently, number coding is largely treated as a binary decision:
+
+$p < 0.05$ $\rightarrow$ number coding
+
+$p \geq 0.05$ $\rightarrow$ not significant
+
+The reviewers also raised concerns about relying strongly on statistical significance when the decoding effects are relatively small.
+
+### Question
+
+> **Could we use a Bayesian analysis to quantify the evidence that an individual neuron carries number information above its null/chance level?**
+
+For example, define an effect such as
+
+$$
+\delta_i
+=
+A_{i,\text{observed}}
+-
+A_{i,\text{null}}
+$$
+
+and estimate the posterior evidence that $\delta_i$ is meaningfully greater than zero.
+
+### Goal
+
+Rather than only reporting a binary significant/not-significant decision, we could report:
+
+- estimated effect size
+- uncertainty
+- credible interval
+- posterior evidence for number information
+
+The Bayesian analysis could therefore be a **complementary analysis**, rather than simply replacing the permutation test.
+
+---
+
+# 9. Are multiple number presentations from the same trial independent?
+
+In the arithmetic task, a single trial contains multiple number presentations.
+
+### Question
+
+> **Should number presentations originating from the same trial be treated as independent observations during cross-validation and permutation testing?**
+
+### Possible concern
+
+If observations from the same trial are dependent, we may need to preserve the trial structure.
+
+For example:
+
+- keep presentations from the same trial in the same CV fold
+- perform grouped cross-validation
+- preserve trial grouping during permutation
+
+### Main question
+
+> **Do we need a trial-level grouping strategy to avoid possible dependence or information leakage?**
+
+---
+
+# 10. How should we handle the strong regional imbalance?
+
+The full dataset contains $554$ neurons, but the regions are highly imbalanced:
+
+| Region | Number of neurons |
+|---|---:|
+| HPC | 389 |
+| AMY | 77 |
+| ENT | 70 |
+| para-HPC | 18 |
+
+### Question
+
+> **How should we compare number coding or population geometry across regions when the sample sizes are this different?**
+
+Possible approaches:
+
+- report the regional analysis as exploratory
+- bootstrap within regions/subjects
+- hierarchical modeling
+- matched/downsampled analyses as a sensitivity check
+
+I do not want to interpret a lack of regional difference as evidence that all MTL regions have the same representation when the sampling is highly unequal.
+
+---
+
+# Main Question Going Forward
+
+All of these questions seem to lead to one central issue:
+
+> **How much of the observed simplex-like structure is genuinely present in the neural population, and how much could depend on choices such as temporal binning, supervised LDA, neuron/component selection, and statistical testing?**
+
+The next step may therefore be to test whether the main geometric results survive alternative analysis pipelines and alternative null geometries before making a stronger simplex claim.
