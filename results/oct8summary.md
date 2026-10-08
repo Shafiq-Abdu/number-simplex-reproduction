@@ -1075,30 +1075,7 @@ The reviewers also raised concerns about relying strongly on statistical signifi
 
 ### Question
 
-> **Could we use a Bayesian analysis to quantify the evidence that an individual neuron carries number information above its null/chance level?**
-
-For example, define an effect such as
-
-$$
-\delta_i
-=
-A_{i,\text{observed}}
--
-A_{i,\text{null}}
-$$
-
-and estimate the posterior evidence that $\delta_i$ is meaningfully greater than zero.
-
-### Goal
-
-Rather than only reporting a binary significant/not-significant decision, we could report:
-
-- estimated effect size
-- uncertainty
-- credible interval
-- posterior evidence for number information
-
-The Bayesian analysis could therefore be a **complementary analysis**, rather than simply replacing the permutation test.
+> **Could we use a Bayesian analysis as complementary analysis to quantify the evidence that an individual neuron carries number information above its null/chance level?**
 
 ---
 
@@ -1141,21 +1118,5 @@ The full dataset contains $554$ neurons, but the regions are highly imbalanced:
 
 > **How should we compare number coding or population geometry across regions when the sample sizes are this different?**
 
-Possible approaches:
-
-- report the regional analysis as exploratory
-- bootstrap within regions/subjects
-- hierarchical modeling
-- matched/downsampled analyses as a sensitivity check
-
-I do not want to interpret a lack of regional difference as evidence that all MTL regions have the same representation when the sampling is highly unequal.
 
 ---
-
-# Main Question Going Forward
-
-All of these questions seem to lead to one central issue:
-
-> **How much of the observed simplex-like structure is genuinely present in the neural population, and how much could depend on choices such as temporal binning, supervised LDA, neuron/component selection, and statistical testing?**
-
-The next step may therefore be to test whether the main geometric results survive alternative analysis pipelines and alternative null geometries before making a stronger simplex claim.
