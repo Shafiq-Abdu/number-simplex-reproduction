@@ -24,9 +24,9 @@ CLASSES = np.arange(1, 10)
 
 MTL_REGIONS = {
     "hpc",
-    "ec",
+    "ent",
     "amy",
-    "phc",
+    "para-hpc",
 }
 
 
