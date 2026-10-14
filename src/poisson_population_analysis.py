@@ -358,10 +358,12 @@ def evaluate_fixed_folds(
 def permutation_test_population(
     X,
     y,
+    groups,
     operands,
-    folds,
     observed_accuracy,
     n_permutations=200,
+    n_splits=5,
+    cv_random_state=42,
     random_state=12345,
 ):
 
@@ -376,35 +378,61 @@ def permutation_test_population(
 
     for p in range(n_permutations):
 
+        # ----------------------------------------------------
+        # Shuffle labels within operand position
+        # ----------------------------------------------------
+
         y_perm = y.copy()
 
-        # Preserve operand-position structure.
-        for operand in np.unique(
-            operands
-        ):
+        for operand in np.unique(operands):
 
             idx = np.where(
                 operands == operand
             )[0]
 
-            y_perm[idx] = (
-                rng.permutation(
-                    y_perm[idx]
-                )
+            y_perm[idx] = rng.permutation(
+                y_perm[idx]
             )
+
+        # ----------------------------------------------------
+        # IMPORTANT:
+        # Create new stratified grouped folds
+        # using the SHUFFLED labels
+        # ----------------------------------------------------
+
+        perm_splitter = StratifiedGroupKFold(
+            n_splits=n_splits,
+            shuffle=True,
+            random_state=cv_random_state,
+        )
+
+        perm_folds = list(
+            perm_splitter.split(
+                X,
+                y_perm,
+                groups=groups,
+            )
+        )
+
+        # ----------------------------------------------------
+        # Evaluate shuffled labels
+        # ----------------------------------------------------
 
         out = evaluate_fixed_folds(
             X,
             y_perm,
-            folds,
+            perm_folds,
         )
 
         null[p] = out["accuracy"]
 
+    # --------------------------------------------------------
+    # One-sided permutation p-value
+    # --------------------------------------------------------
+
     p_value = (
         1
-        +
-        np.sum(
+        + np.sum(
             null >= observed_accuracy
         )
     ) / (
@@ -412,13 +440,23 @@ def permutation_test_population(
     )
 
     return {
-        "null_accuracies": null,
+        "null_accuracies":
+            null,
+
         "null_mean":
-            float(null.mean()),
+            float(
+                null.mean()
+            ),
+
         "null_std":
-            float(null.std(ddof=1)),
+            float(
+                null.std(ddof=1)
+            ),
+
         "p_value":
-            float(p_value),
+            float(
+                p_value
+            ),
     }
 
 
@@ -553,17 +591,21 @@ def analyze_population_subject(
     # --------------------------------------------------------
 
     permutation = (
-        permutation_test_population(
-            X,
-            y,
-            operands,
-            folds,
-            observed_accuracy=
-                cv["accuracy"],
-            n_permutations=
-                n_permutations,
-            random_state=
-                permutation_seed,
+    permutation_test_population(
+        X=X,
+        y=y,
+        groups=groups,
+        operands=operands,
+        observed_accuracy=
+            cv["accuracy"],
+        n_permutations=
+            n_permutations,
+        n_splits=
+            n_splits,
+        cv_random_state=
+            cv_random_state,
+        random_state=
+            permutation_seed,
         )
     )
 
