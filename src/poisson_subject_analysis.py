@@ -8,7 +8,7 @@ from src.number_decoding_analysis import make_temporal_features
 from src.poisson_naive_bayes import cv_poisson_nb
 
 
-MTL_REGIONS = {"hpc", "ent", "amy", "phc"}
+MTL_REGIONS = {"hpc", "ent", "amy", "para-hpc"}
 
 
 def compute_fano_lambda(X, y):
