@@ -730,68 +730,280 @@ $$
 
 which is the Gamma-Poisson posterior predictive distribution, written in Negative Binomial form.
 
+
+
+
+# Bayesian Classifier Derivations
+
+## 1. Poisson Naive Bayes with Plug-in Estimate of λ
+
+### Setup
+
+For one trial, $`X = (X_1, \ldots, X_d)`$ is the vector of spike-count features, and $`Y \in \{1, \ldots, 9\}`$ is the number class.
+
+We use a uniform class prior:
+
+```math
+P(Y = k) = \pi_k = \frac{1}{9}
+```
+
+For each class $`k`$ and feature $`j`$:
+
+```math
+X_j \mid Y = k \sim \operatorname{Poisson}(\lambda_{kj})
+```
+
+The Poisson probability mass function is:
+
+```math
+P(X_j = x_j \mid Y = k) = \frac{e^{-\lambda_{kj}} \, \lambda_{kj}^{x_j}}{x_j!}
+```
+
+### Estimate of λ
+
+Using only the training data:
+
+```math
+\hat{\lambda}_{kj} = \frac{1}{N_k} \sum_{i : y_i = k} x_{ij}
+```
+
+So $`\hat{\lambda}_{kj}`$ is the sample mean spike count for class $`k`$ and feature $`j`$.
+
+### Conditional-independence assumption
+
+Naive Bayes assumes the features are conditionally independent given the class:
+
+```math
+P(X = x \mid Y = k) = \prod_{j=1}^{d} P(X_j = x_j \mid Y = k)
+```
+
+Therefore:
+
+```math
+P(X = x \mid Y = k) = \prod_{j=1}^{d} \frac{e^{-\hat{\lambda}_{kj}} \, \hat{\lambda}_{kj}^{x_j}}{x_j!}
+```
+
+### Posterior over the number class
+
+By Bayes' rule:
+
+```math
+P(Y = k \mid X = x) = \frac{P(X = x \mid Y = k) \, P(Y = k)}{\sum_{\ell=1}^{9} P(X = x \mid Y = \ell) \, P(Y = \ell)}
+```
+
+with the uniform prior $`P(Y = k) = 1/9`$.
+
+### Log-score derivation
+
+Multiplying many small probabilities can cause numerical underflow, so we work in log space.
+
+Define the class log score:
+
+```math
+s_k = \log P(Y = k) + \log P(X = x \mid Y = k)
+```
+
+Using conditional independence:
+
+```math
+s_k = \log \pi_k + \sum_{j=1}^{d} \log P(X_j = x_j \mid Y = k)
+```
+
+Substituting the Poisson likelihood:
+
+```math
+s_k = \log \pi_k + \sum_{j=1}^{d} \left[ -\hat{\lambda}_{kj} + x_j \log \hat{\lambda}_{kj} - \log(x_j!) \right]
+```
+
+The term $`\log(x_j!)`$ does not depend on the class $`k`$. It is identical for all nine classes, so it can be dropped when comparing classes.
+
+The practical log score is therefore:
+
+```math
+\boxed{\, s_k = \log \pi_k + \sum_{j=1}^{d} \left[ x_j \log \hat{\lambda}_{kj} - \hat{\lambda}_{kj} \right] \,}
+```
+
+with $`\pi_k = 1/9`$ for a uniform prior.
+
+### Prediction
+
+The logarithm is monotonic, so the predicted class is the one with the largest log score:
+
+```math
+\boxed{\, \hat{Y} = \arg\max_k \, s_k \,}
+```
+
+### Posterior probabilities from the log scores
+
+The normalized posterior probabilities are:
+
+```math
+P(Y = k \mid X = x) = \frac{e^{s_k}}{\sum_{\ell=1}^{9} e^{s_\ell}}
+```
+
+For numerical stability, define the log-sum-exp:
+
+```math
+L = \log \left( \sum_{\ell=1}^{9} e^{s_\ell} \right)
+```
+
+Then:
+
+```math
+\log P(Y = k \mid X = x) = s_k - L
+```
+
+and therefore:
+
+```math
+\boxed{\, P(Y = k \mid X = x) = e^{s_k - L} \,}
+```
+
+with
+
+```math
+\sum_{k=1}^{9} P(Y = k \mid X = x) = 1
+```
+
+---
+
+## 2. Fully Bayesian Extension: Gamma Prior on λ
+
+Instead of replacing $`\lambda`$ with a single sample-mean estimate, we model the uncertainty in $`\lambda`$.
+
+### Gamma prior
+
+For one class $`k`$ and one feature $`j`$:
+
+```math
+\lambda_{kj} \sim \operatorname{Gamma}(\alpha, \beta)
+```
+
+using the shape–rate parameterization:
+
+```math
+p(\lambda_{kj}) = \frac{\beta^{\alpha}}{\Gamma(\alpha)} \, \lambda_{kj}^{\alpha - 1} \, e^{-\beta \lambda_{kj}}
+```
+
+### Poisson likelihood for the training counts
+
+Suppose the training spike counts for this class–feature pair are $`x_1, \ldots, x_n`$. Conditioned on $`\lambda_{kj}`$:
+
+```math
+x_i \mid \lambda_{kj} \sim \operatorname{Poisson}(\lambda_{kj})
+```
+
+Hence:
+
+```math
+P(D \mid \lambda_{kj}) = \prod_{i=1}^{n} \frac{e^{-\lambda_{kj}} \, \lambda_{kj}^{x_i}}{x_i!}
+```
+
+Ignoring terms that do not depend on $`\lambda_{kj}`$:
+
+```math
+P(D \mid \lambda_{kj}) \propto e^{-n \lambda_{kj}} \, \lambda_{kj}^{\sum_i x_i}
+```
+
+### Posterior distribution of λ
+
+By Bayes' rule:
+
+```math
+p(\lambda_{kj} \mid D) \propto P(D \mid \lambda_{kj}) \, p(\lambda_{kj})
+```
+
+Therefore:
+
+```math
+p(\lambda_{kj} \mid D) \propto \lambda_{kj}^{\alpha + \sum_i x_i - 1} \, e^{-(\beta + n) \lambda_{kj}}
+```
+
+Thus:
+
+```math
+\boxed{\, \lambda_{kj} \mid D \sim \operatorname{Gamma}\left( \alpha + \sum_{i=1}^{n} x_i, \; \beta + n \right) \,}
+```
+
+Define
+
+```math
+a = \alpha + \sum_{i=1}^{n} x_i, \qquad b = \beta + n
+```
+
+so that $`\lambda_{kj} \mid D \sim \operatorname{Gamma}(a, b)`$.
+
+### Posterior predictive distribution
+
+For a new spike count $`x`$:
+
+```math
+P(X_{\text{new}} = x \mid D) = \int_0^{\infty} P(X_{\text{new}} = x \mid \lambda) \, p(\lambda \mid D) \, d\lambda
+```
+
+Substituting the Poisson likelihood and the Gamma posterior:
+
+```math
+P(X_{\text{new}} = x \mid D) = \int_0^{\infty} \frac{e^{-\lambda} \lambda^{x}}{x!} \cdot \frac{b^{a}}{\Gamma(a)} \lambda^{a-1} e^{-b\lambda} \, d\lambda
+```
+
+Collecting terms:
+
+```math
+P(X_{\text{new}} = x \mid D) = \frac{b^{a}}{x! \, \Gamma(a)} \int_0^{\infty} \lambda^{x + a - 1} \, e^{-(b+1)\lambda} \, d\lambda
+```
+
+Using the identity
+
+```math
+\int_0^{\infty} \lambda^{c-1} e^{-d\lambda} \, d\lambda = \frac{\Gamma(c)}{d^{c}}
+```
+
+we obtain:
+
+```math
+P(X_{\text{new}} = x \mid D) = \frac{b^{a}}{x! \, \Gamma(a)} \cdot \frac{\Gamma(x + a)}{(b + 1)^{x + a}}
+```
+
+Therefore:
+
+```math
+\boxed{\, P(X_{\text{new}} = x \mid D) = \frac{\Gamma(x + a)}{\Gamma(a) \, x!} \left( \frac{b}{b+1} \right)^{a} \left( \frac{1}{b+1} \right)^{x} \,}
+```
+
+This is the Gamma–Poisson posterior predictive distribution, written in Negative Binomial form.
+
 ### Full Bayesian classifier
 
-For every class $k$ and feature $j$,
+For every class $`k`$ and feature $`j`$:
 
-$$
-\lambda_{kj}\mid D
-\sim
-\operatorname{Gamma}(a_{kj},b_{kj}).
-$$
+```math
+\lambda_{kj} \mid D \sim \operatorname{Gamma}(a_{kj}, b_{kj})
+```
 
-The predictive probability for one feature is
+The predictive probability for one feature is:
 
-$$
-P(x_j\mid Y=k,D)
-=
-\int_0^\infty
-P(x_j\mid\lambda_{kj})
-p(\lambda_{kj}\mid D)
-\,d\lambda_{kj}.
-$$
+```math
+P(x_j \mid Y = k, D) = \int_0^{\infty} P(x_j \mid \lambda_{kj}) \, p(\lambda_{kj} \mid D) \, d\lambda_{kj}
+```
 
-Under the same conditional-independence assumption,
+Under the same conditional-independence assumption:
 
-$$
-P(X=x\mid Y=k,D)
-=
-\prod_{j=1}^{d}
-P(x_j\mid Y=k,D).
-$$
+```math
+P(X = x \mid Y = k, D) = \prod_{j=1}^{d} P(x_j \mid Y = k, D)
+```
 
-Finally,
+Finally:
 
-$$
-\boxed{
-P(Y=k\mid X=x,D)
-=
-\frac{
-P(Y=k)
-\prod_{j=1}^{d}
-P(x_j\mid Y=k,D)
-}{
-\sum_{\ell=1}^{9}
-P(Y=\ell)
-\prod_{j=1}^{d}
-P(x_j\mid Y=\ell,D)
-}
-}
-$$
+```math
+\boxed{\, P(Y = k \mid X = x, D) = \frac{P(Y = k) \prod_{j=1}^{d} P(x_j \mid Y = k, D)}{\sum_{\ell=1}^{9} P(Y = \ell) \prod_{j=1}^{d} P(x_j \mid Y = \ell, D)} \,}
+```
 
-with the same uniform class prior
+with the same uniform class prior $`P(Y = k) = 1/9`$.
 
-$$
-P(Y=k)=\frac{1}{9}.
-$$
+The final prediction is:
 
-The final prediction is
+```math
+\boxed{\, \hat{Y} = \arg\max_k \, P(Y = k \mid X = x, D) \,}
+```
 
-$$
-\boxed{
-\hat{Y}
-=
-\arg\max_k
-P(Y=k\mid X=x,D)
-}.
-$$
