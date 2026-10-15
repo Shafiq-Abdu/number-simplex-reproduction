@@ -1,8 +1,6 @@
-# Advisor Meeting Summary: Classifiers and Bayesian Population Decoder
+#oct 15 Summary: Classifiers and Bayesian Population Decoder
 
-## 1. Different classifiers
-
-- Goal: check whether number decoding depends strongly on the classifier or on the supervised LDA representation.
+## 1
 
 ### Logistic regression
 
@@ -235,9 +233,8 @@
 
 ---
 
-## 7. Relation to the reviewer concern
+## 7. 
 
-- Reviewer concern:
   - supervised temporal LDA may increase class separation before the simplex geometry is measured.
 - Poisson Naive Bayes is different:
   - it keeps the original spike-count coordinates;
@@ -258,7 +255,7 @@
 
 ---
 
-## 8. Very short take-home message
+## 8.
 
 - Logistic regression and LDA give broadly similar decoding behavior, although logistic regression has higher raw accuracy overall.
 - PCA is an unsupervised dimensionality-reduction control, not a classifier.
