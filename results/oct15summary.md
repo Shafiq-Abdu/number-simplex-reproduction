@@ -542,3 +542,155 @@ The final prediction is:
 \boxed{\, \hat{Y} = \arg\max_k \, P(Y = k \mid X = x, D) \,}
 ```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>subject</th>
+      <th>gamma_accuracy</th>
+      <th>mle_accuracy</th>
+      <th>delta_accuracy</th>
+      <th>gamma_balanced_accuracy</th>
+      <th>mle_balanced_accuracy</th>
+      <th>delta_balanced</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6</th>
+      <td>YFP</td>
+      <td>0.151899</td>
+      <td>0.132911</td>
+      <td>0.018987</td>
+      <td>0.105580</td>
+      <td>0.100632</td>
+      <td>0.004948</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>YFF</td>
+      <td>0.192661</td>
+      <td>0.183486</td>
+      <td>0.009174</td>
+      <td>0.148992</td>
+      <td>0.153032</td>
+      <td>-0.004040</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>YFL</td>
+      <td>0.157895</td>
+      <td>0.149123</td>
+      <td>0.008772</td>
+      <td>0.109545</td>
+      <td>0.109250</td>
+      <td>0.000295</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>YFU</td>
+      <td>0.109312</td>
+      <td>0.109312</td>
+      <td>0.000000</td>
+      <td>0.093849</td>
+      <td>0.105901</td>
+      <td>-0.012052</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>YFI</td>
+      <td>0.221154</td>
+      <td>0.221154</td>
+      <td>0.000000</td>
+      <td>0.111111</td>
+      <td>0.150022</td>
+      <td>-0.038911</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>YFT</td>
+      <td>0.136268</td>
+      <td>0.136268</td>
+      <td>0.000000</td>
+      <td>0.126056</td>
+      <td>0.131361</td>
+      <td>-0.005305</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>YFR</td>
+      <td>0.112782</td>
+      <td>0.112782</td>
+      <td>0.000000</td>
+      <td>0.102472</td>
+      <td>0.101830</td>
+      <td>0.000642</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>YFM</td>
+      <td>0.122807</td>
+      <td>0.140351</td>
+      <td>-0.017544</td>
+      <td>0.087633</td>
+      <td>0.101289</td>
+      <td>-0.013655</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>YFS</td>
+      <td>0.106061</td>
+      <td>0.128788</td>
+      <td>-0.022727</td>
+      <td>0.097012</td>
+      <td>0.123494</td>
+      <td>-0.026482</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>YFJ</td>
+      <td>0.166667</td>
+      <td>0.192982</td>
+      <td>-0.026316</td>
+      <td>0.118040</td>
+      <td>0.152883</td>
+      <td>-0.034843</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>YFK</td>
+      <td>0.166667</td>
+      <td>0.219298</td>
+      <td>-0.052632</td>
+      <td>0.125762</td>
+      <td>0.173736</td>
+      <td>-0.047974</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+Mean Gamma accuracy: 0.1494700785602819
+Mean MLE accuracy: 0.15695052558520278
+Mean Gamma balanced accuracy: 0.11145924526448975
+Mean MLE balanced accuracy: 0.12758451334669166
