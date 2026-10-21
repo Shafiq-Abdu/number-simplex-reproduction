@@ -1,0 +1,2 @@
+subject,n_neurons,n_presentations,n_trials,n_bins,n_features,bin_ms,window_start_ms,window_end_ms,reference_neuron,lda_accuracy,lda_balanced_accuracy,logistic_accuracy,logistic_balanced_accuracy,n_splits,random_state,nominal_chance
+YFL,56,114,78,9,504,100,50,950,20,0.15826745718050067,0.12291666666666665,0.12266139657444006,0.10231481481481482,5,42,0.1111111111111111
