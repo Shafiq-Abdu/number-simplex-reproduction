@@ -195,6 +195,12 @@ def build_population_matrix(
 
             relative_spikes = spike_times - onset
 
+            # Match the original analysis window exactly:
+            # include 50 ms, exclude 950 ms.
+            relative_spikes = relative_spikes[
+                (relative_spikes >= window_start_ms)
+                & (relative_spikes < window_end_ms)
+            ]
             counts, _ = np.histogram(
                 relative_spikes,
                 bins=bin_edges,
