@@ -194,3 +194,77 @@ S_{cj}
 n_c\Delta t
 }.
 \]
+
+
+## Posterior Prediction
+
+After observing the training data, the firing rate for class \(c\) and feature \(j\) has posterior
+
+\[
+\lambda_{cj}\mid D
+\sim
+\operatorname{Gamma}
+\left(
+\alpha'_{cj},
+\beta'_{cj}
+\right).
+\]
+
+There are two ways to use this posterior for decoding.
+
+### 1. Posterior-mean plug-in decoder
+
+Use the posterior mean
+
+\[
+\hat{\lambda}_{cj}
+=
+E[\lambda_{cj}\mid D]
+=
+\frac{\alpha'_{cj}}{\beta'_{cj}}
+\]
+
+as the estimated firing rate and evaluate a Poisson likelihood:
+
+\[
+x_j
+\sim
+\operatorname{Poisson}
+\left(
+\hat{\lambda}_{cj}\Delta t
+\right).
+\]
+
+This uses Bayesian estimation of the firing rate but reduces the posterior distribution to a single point estimate.
+
+### 2. Full Gamma–Poisson posterior-predictive decoder
+
+Instead of selecting one value of \(\lambda\), integrate over its complete posterior uncertainty:
+
+\[
+p(x_j\mid c,D)
+=
+\int
+p(x_j\mid \lambda_{cj})
+p(\lambda_{cj}\mid D)
+\,d\lambda_{cj}.
+\]
+
+For a Gamma posterior and Poisson observation model, this integral is available analytically:
+
+\[
+p(x_j\mid c,D)
+=
+\frac{\Gamma(\alpha'_{cj}+x_j)}
+{\Gamma(\alpha'_{cj})x_j!}
+\left(
+\frac{\beta'_{cj}}
+{\beta'_{cj}+\Delta t}
+\right)^{\alpha'_{cj}}
+\left(
+\frac{\Delta t}
+{\beta'_{cj}+\Delta t}
+\right)^{x_j}.
+\]
+
+This is the Gamma–Poisson, or negative-binomial, posterior-predictive distribution.
