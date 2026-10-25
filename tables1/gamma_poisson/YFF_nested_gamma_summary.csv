@@ -1,0 +1,2 @@
+gamma_accuracy,gamma_balanced_accuracy,mle_accuracy,mle_balanced_accuracy,gamma_correct,mle_correct,n_presentations
+0.1926605504587156,0.14899237472766882,0.1834862385321101,0.15303207141442435,21,20,109
