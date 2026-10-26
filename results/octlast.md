@@ -78,11 +78,6 @@ Instead, an important next question is whether the limitation comes from:
 ---
 # Gamma–Poisson Bayesian Population Decoder
 
-## Goal
-
-Reconstruct the Gamma–Poisson Bayesian decoder from first principles and understand every statistical assumption before applying it to the complete number-decoding dataset.
-
-The final goals are:
 
 1. reproduce the subject-level Bayesian decoding results,
 2. understand how the Gamma prior changes the Poisson rate estimates,
@@ -97,41 +92,39 @@ For each number presentation, neural activity is represented using fixed 100-ms 
 
 Each neuron therefore contributes 9 spike-count features.
 
-For \(N\) neurons,
+For $N$ neurons,
 
-\[
+```math
 p = 9N
-\]
+```
 
 features are used.
 
 A single presentation is represented as
 
-\[
-\mathbf{x} = [x_1,\ldots,x_p],
-\]
+```math
+\mathbf{x} = [x_1, \ldots, x_p],
+```
 
-where each \(x_j\) is a spike count.
+where each $x_j$ is a spike count.
 
 ---
 
 ## Poisson model
 
-For number class \(c\) and feature \(j\),
+For number class $c$ and feature $j$,
 
-\[
-X_j \mid c,\lambda_{cj}
-\sim
-\operatorname{Poisson}(\lambda_{cj}\Delta t),
-\]
+```math
+X_j \mid c, \lambda_{cj} \sim \operatorname{Poisson}(\lambda_{cj} \Delta t),
+```
 
 where
 
-\[
+```math
 \Delta t = 0.1 \text{ s}.
-\]
+```
 
-Here, \(\lambda_{cj}\) is the firing rate in spikes/s associated with number \(c\) for neural feature \(j\).
+Here, $\lambda_{cj}$ is the firing rate in spikes/s associated with number $c$ for neural feature $j$.
 
 ---
 
@@ -139,11 +132,9 @@ Here, \(\lambda_{cj}\) is the firing rate in spikes/s associated with number \(c
 
 We place a Gamma prior on each Poisson firing rate:
 
-\[
-\lambda_{cj}
-\sim
-\operatorname{Gamma}(\alpha,\beta),
-\]
+```math
+\lambda_{cj} \sim \operatorname{Gamma}(\alpha, \beta),
+```
 
 using the shape–rate parameterization.
 
@@ -153,62 +144,39 @@ The Gamma distribution is conjugate to the Poisson likelihood.
 
 ## Posterior
 
-If class \(c\) has \(n_c\) training presentations and the total spike count for feature \(j\) is
+If class $c$ has $n_c$ training presentations and the total spike count for feature $j$ is
 
-\[
+```math
 S_{cj} = \sum_i x_{ij},
-\]
+```
 
 then
 
-\[
-\lambda_{cj}\mid D
-\sim
-\operatorname{Gamma}
-\left(
-\alpha + S_{cj},
-\beta + n_c\Delta t
-\right).
-\]
+```math
+\lambda_{cj} \mid D \sim \operatorname{Gamma}\left(\alpha + S_{cj},\; \beta + n_c \Delta t\right).
+```
 
 The posterior mean is
 
-\[
-E[\lambda_{cj}\mid D]
-=
-\frac{
-\alpha + S_{cj}
-}{
-\beta + n_c\Delta t
-}.
-\]
+```math
+E[\lambda_{cj} \mid D] = \frac{\alpha + S_{cj}}{\beta + n_c \Delta t}.
+```
 
 For comparison, the Poisson maximum-likelihood estimate is
 
-\[
-\hat{\lambda}^{MLE}_{cj}
-=
-\frac{
-S_{cj}
-}{
-n_c\Delta t
-}.
-\]
+```math
+\hat{\lambda}^{\mathrm{MLE}}_{cj} = \frac{S_{cj}}{n_c \Delta t}.
+```
 
+---
 
-## Posterior Prediction
+## Posterior prediction
 
-After observing the training data, the firing rate for class \(c\) and feature \(j\) has posterior
+After observing the training data, the firing rate for class $c$ and feature $j$ has posterior
 
-\[
-\lambda_{cj}\mid D
-\sim
-\operatorname{Gamma}
-\left(
-\alpha'_{cj},
-\beta'_{cj}
-\right).
-\]
+```math
+\lambda_{cj} \mid D \sim \operatorname{Gamma}\left(\alpha'_{cj},\; \beta'_{cj}\right).
+```
 
 There are two ways to use this posterior for decoding.
 
@@ -216,59 +184,37 @@ There are two ways to use this posterior for decoding.
 
 Use the posterior mean
 
-\[
-\hat{\lambda}_{cj}
-=
-E[\lambda_{cj}\mid D]
-=
-\frac{\alpha'_{cj}}{\beta'_{cj}}
-\]
+```math
+\hat{\lambda}_{cj} = E[\lambda_{cj} \mid D] = \frac{\alpha'_{cj}}{\beta'_{cj}}
+```
 
 as the estimated firing rate and evaluate a Poisson likelihood:
 
-\[
-x_j
-\sim
-\operatorname{Poisson}
-\left(
-\hat{\lambda}_{cj}\Delta t
-\right).
-\]
+```math
+x_j \sim \operatorname{Poisson}\left(\hat{\lambda}_{cj} \Delta t\right).
+```
 
 This uses Bayesian estimation of the firing rate but reduces the posterior distribution to a single point estimate.
 
 ### 2. Full Gamma–Poisson posterior-predictive decoder
 
-Instead of selecting one value of \(\lambda\), integrate over its complete posterior uncertainty:
+Instead of selecting one value of $\lambda$, integrate over its complete posterior uncertainty:
 
-\[
-p(x_j\mid c,D)
-=
-\int
-p(x_j\mid \lambda_{cj})
-p(\lambda_{cj}\mid D)
-\,d\lambda_{cj}.
-\]
+```math
+p(x_j \mid c, D) = \int p(x_j \mid \lambda_{cj}) \, p(\lambda_{cj} \mid D) \, d\lambda_{cj}.
+```
 
 For a Gamma posterior and Poisson observation model, this integral is available analytically:
 
-\[
-p(x_j\mid c,D)
+```math
+p(x_j \mid c, D)
 =
-\frac{\Gamma(\alpha'_{cj}+x_j)}
-{\Gamma(\alpha'_{cj})x_j!}
-\left(
-\frac{\beta'_{cj}}
-{\beta'_{cj}+\Delta t}
-\right)^{\alpha'_{cj}}
-\left(
-\frac{\Delta t}
-{\beta'_{cj}+\Delta t}
-\right)^{x_j}.
-\]
+\frac{\Gamma(\alpha'_{cj} + x_j)}{\Gamma(\alpha'_{cj}) \, x_j!}
+\left( \frac{\beta'_{cj}}{\beta'_{cj} + \Delta t} \right)^{\alpha'_{cj}}
+\left( \frac{\Delta t}{\beta'_{cj} + \Delta t} \right)^{x_j}.
+```
 
 This is the Gamma–Poisson, or negative-binomial, posterior-predictive distribution.
-
 
 -----
 # Gamma-Poisson Bayesian Decoding Pipeline
