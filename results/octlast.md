@@ -1012,6 +1012,10 @@ Later we will compare the empirical CV against matched random controls.
 
 # Step 5 — PCA visualization
 
+![alt text](image-10.png)
+
+
+![alt text](image-11.png)
 Because PCA of centered data follows directly from the SVD,
 
 ```math
