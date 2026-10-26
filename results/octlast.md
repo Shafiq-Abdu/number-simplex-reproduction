@@ -1035,6 +1035,8 @@ Total:
 ```math
 PC1+PC2+PC3=63.60\%
 ```
+![alt text](image-9.png)
+
 
 ### Important observations
 
