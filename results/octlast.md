@@ -1527,7 +1527,7 @@ This requires matched controls.
 
 ---
 
-# Analyses Not Yet Performed
+# Analyses  Performing .....
 
 The following analyses remain.
 
@@ -1684,16 +1684,695 @@ Trial-level SSD / CCGP / ordering analyses
 Repeat for all subjects
 ```
 
-## Current working interpretation
+---
 
-The analysis so far does **not** support describing YFF as a regular simplex.
 
-It does support the more precise mathematical statement:
+# YFF Bayesian Geometry Analysis
 
-> **The nine YFF Bayesian posterior-mean number centers are numerically affinely independent and therefore define a nondegenerate irregular 8-simplex in the 333-dimensional neural feature space.**
+## Step 9 — Sequential Transition Angles
 
-The next scientific question is not simply whether it is a simplex.
+### 9.1 Goal
 
-The next question is:
+- Test whether the ordered numerical trajectory
 
-> **What is special, if anything, about the geometry of this irregular neural simplex compared with appropriate high-dimensional control representations?**
+```text
+1 → 2 → 3 → ... → 9
+```
+
+behaves like:
+
+- a one-dimensional number line
+- a regular simplex
+- an irregular high-dimensional trajectory
+
+---
+
+### 9.2 Sequential transition vectors
+
+For the posterior-mean number representations
+
+```math
+\lambda_1,\lambda_2,\ldots,\lambda_9 \in \mathbb{R}^{333}
+```
+
+define:
+
+```math
+d_k=\lambda_{k+1}-\lambda_k
+```
+
+for
+
+```math
+k=1,\ldots,8
+```
+
+Therefore:
+
+```text
+8 sequential transition vectors
+```
+
+---
+
+### 9.3 Sequential transition lengths
+
+| Transition | Euclidean length |
+|---|---:|
+| $1\rightarrow2$ | 6.564958 |
+| $2\rightarrow3$ | 6.282076 |
+| $3\rightarrow4$ | 5.649790 |
+| $4\rightarrow5$ | 5.740646 |
+| $5\rightarrow6$ | 7.059989 |
+| $6\rightarrow7$ | 4.998838 |
+| $7\rightarrow8$ | 5.159074 |
+| $8\rightarrow9$ | 4.536897 |
+
+---
+
+### 9.4 Transition-angle definition
+
+For two consecutive transition vectors:
+
+```math
+\theta_k=\cos^{-1}\left(\frac{d_k^\top d_{k+1}}{\|d_k\|\,\|d_{k+1}\|}\right)
+```
+
+There are:
+
+```math
+7
+```
+
+sequential transition angles.
+
+---
+
+### 9.5 Reference geometries
+
+#### Straight number line
+
+```math
+\theta \approx 0^\circ
+```
+
+#### Regular simplex
+
+```math
+\theta = 120^\circ
+```
+
+---
+
+### 9.6 YFF transition angles
+
+| Consecutive transitions | Angle |
+|---|---:|
+| $1\rightarrow2$ vs $2\rightarrow3$ | 137.575° |
+| $2\rightarrow3$ vs $3\rightarrow4$ | 99.374° |
+| $3\rightarrow4$ vs $4\rightarrow5$ | 123.364° |
+| $4\rightarrow5$ vs $5\rightarrow6$ | 116.540° |
+| $5\rightarrow6$ vs $6\rightarrow7$ | 110.375° |
+| $6\rightarrow7$ vs $7\rightarrow8$ | 124.193° |
+| $7\rightarrow8$ vs $8\rightarrow9$ | 118.855° |
+
+---
+
+### 9.7 Transition-angle summary
+
+| Metric | Result |
+|---|---:|
+| Mean transition angle | 118.611° |
+| SD | 11.056° |
+| Minimum | 99.374° |
+| Maximum | 137.575° |
+| Number-line reference | 0° |
+| Regular-simplex reference | 120° |
+
+---
+
+### 9.8 Step 9 result
+
+```text
+Mean YFF transition angle ≈ 118.61°
+Regular-simplex transition angle = 120°
+```
+
+- All 7 transition angles are greater than 99°.
+- The trajectory is strongly bent in the 333-dimensional neural space.
+- The ordered numerical path does not resemble a straight one-dimensional number line.
+- The mean transition angle is close to the regular-simplex benchmark.
+- Individual transition angles remain heterogeneous.
+
+---
+
+# Step 10 — Number-Line Geometry Tests
+
+## Step 10A — Neural Distance vs Linear Numerical Distance
+
+### 10A.1 Numerical distance
+
+For numbers $i$ and $j$:
+
+```math
+D_{\mathrm{num}}(i,j)=|i-j|
+```
+
+Examples:
+
+```math
+|1-2|=1
+```
+
+```math
+|1-9|=8
+```
+
+---
+
+### 10A.2 Neural distance
+
+For Bayesian posterior-mean neural representations:
+
+```math
+D_{\mathrm{neural}}(i,j)=\|\lambda_i-\lambda_j\|_2
+```
+
+There are:
+
+```math
+\binom{9}{2}=36
+```
+
+unique number pairs.
+
+---
+
+### 10A.3 Number-line prediction
+
+A simple linear number line predicts:
+
+```math
+|i-j|\uparrow
+\quad\Rightarrow\quad
+D_{\mathrm{neural}}(i,j)\uparrow
+```
+
+---
+
+### 10A.4 Pearson correlation
+
+Pearson correlation tests the linear relationship between:
+
+```math
+|i-j|
+```
+
+and
+
+```math
+D_{\mathrm{neural}}(i,j)
+```
+
+Result:
+
+```math
+r=-0.2661
+```
+
+Naive correlation p-value:
+
+```math
+p=0.1168
+```
+
+---
+
+### 10A.5 Spearman correlation
+
+Spearman correlation tests whether neural distance increases monotonically with numerical distance.
+
+Result:
+
+```math
+\rho=-0.2132
+```
+
+Naive p-value:
+
+```math
+p=0.2119
+```
+
+---
+
+### 10A.6 Mean neural distance by numerical separation
+
+| Numerical distance $|i-j|$ | Mean neural distance | SD | Number of pairs |
+|---:|---:|---:|---:|
+| 1 | 5.749 | 0.850 | 8 |
+| 2 | 5.918 | 1.266 | 7 |
+| 3 | 6.192 | 1.575 | 6 |
+| 4 | 5.593 | 0.439 | 5 |
+| 5 | 5.272 | 0.751 | 4 |
+| 6 | 5.314 | 0.393 | 3 |
+| 7 | 5.010 | 0.469 | 2 |
+| 8 | 5.012 | — | 1 |
+
+---
+
+### 10A.7 Important example
+
+```math
+|1-9|=8
+```
+
+but:
+
+```math
+D_{\mathrm{neural}}(1,9)\approx5.012
+```
+
+while:
+
+```math
+|2-5|=3
+```
+
+but:
+
+```math
+D_{\mathrm{neural}}(2,5)\approx8.815
+```
+
+Therefore:
+
+```math
+D_{\mathrm{neural}}(2,5)>D_{\mathrm{neural}}(1,9)
+```
+
+even though:
+
+```math
+|2-5|<|1-9|
+```
+
+---
+
+### 10A.8 Linear number-line result
+
+```text
+Pearson r = -0.266
+Spearman rho = -0.213
+```
+
+- Neural distance does not increase with absolute numerical distance.
+- The relationship is slightly negative rather than positive.
+- The Euclidean posterior-mean geometry does not support a simple linear number line.
+
+---
+
+# Step 10B — Logarithmic Number-Line Test
+
+### 10B.1 Logarithmic numerical distance
+
+Define:
+
+```math
+D_{\log}(i,j)=|\log(i)-\log(j)|
+```
+
+Example:
+
+```math
+|\log(1)-\log(2)| \approx 0.693
+```
+
+while:
+
+```math
+|\log(8)-\log(9)| \approx 0.118
+```
+
+Thus the logarithmic model compresses larger numbers.
+
+---
+
+### 10B.2 Results
+
+| Metric | Linear distance | Logarithmic distance |
+|---|---:|---:|
+| Pearson correlation | -0.266 | -0.221 |
+| Spearman correlation | -0.213 | -0.139 |
+| Naive Pearson p | 0.117 | 0.196 |
+| Naive Spearman p | 0.212 | 0.419 |
+
+---
+![alt text](image-13.png)
+### 10B.3 Log-number-line result
+
+```text
+Linear Pearson = -0.266
+Log Pearson = -0.221
+
+Linear Spearman = -0.213
+Log Spearman = -0.139
+```
+
+- Logarithmic compression slightly reduces the negative relationship.
+- Neither Pearson nor Spearman becomes positive.
+- The logarithmic number-line model does not explain the YFF neural-distance geometry well.
+
+---
+
+# Step 10C — Permutation Test for RDM Correlations
+
+### 10C.1 Motivation
+
+The 36 pairwise distances are not independent.
+
+The same number representation appears in multiple pairs.
+
+Example:
+
+```text
+(1,2), (1,3), (1,4), ..., (1,9)
+```
+
+Therefore ordinary correlation p-values are not the final inferential test.
+
+---
+
+### 10C.2 Permutation procedure
+
+- Keep the 9 neural representations fixed.
+- Randomly permute the labels $1,\ldots,9$.
+- Recalculate numerical distances.
+- Recalculate Pearson and Spearman correlations.
+- Repeat:
+
+```text
+20,000 permutations
+```
+
+---
+
+### 10C.3 Permutation results
+
+| Model | Observed correlation | Two-sided permutation p | Positive-tail p |
+|---|---:|---:|---:|
+| Linear Pearson | -0.2661 | 0.1452 | 0.9370 |
+| Linear Spearman | -0.2132 | 0.2229 | 0.8926 |
+| Log Pearson | -0.2208 | 0.3966 | 0.8151 |
+| Log Spearman | -0.1390 | 0.6191 | 0.6670 |
+
+---
+
+### 10C.4 Permutation conclusion
+
+- No correlation is significantly different from random label assignments.
+- No test supports the predicted positive number-line relationship.
+- The negative correlations are also not unusually negative.
+- Correct interpretation:
+
+```text
+No detectable relationship between numerical distance
+and Euclidean neural distance.
+```
+
+---
+
+# Step 10D — One-Dimensional Magnitude Axis
+
+### 10D.1 Motivation
+
+Failure of total Euclidean distance does not imply that numerical magnitude is completely absent.
+
+A magnitude-related direction could be embedded inside the high-dimensional representation.
+
+---
+
+### 10D.2 Linear magnitude coordinate
+
+For numbers $1,\ldots,9$:
+
+```math
+x_k=k-\bar{k}
+```
+
+Since:
+
+```math
+\bar{k}=5
+```
+
+the centered predictor is:
+
+```text
+-4, -3, -2, -1, 0, 1, 2, 3, 4
+```
+
+---
+
+### 10D.3 Linear magnitude model
+
+Fit:
+
+```math
+C_k \approx x_k b
+```
+
+where:
+
+```math
+b\in\mathbb{R}^{333}
+```
+
+is the neural direction associated with numerical magnitude.
+
+Least-squares solution:
+
+```math
+b=\frac{\sum_k x_k C_k}{\sum_k x_k^2}
+```
+
+Predicted geometry:
+
+```math
+\hat{C}_k=x_kb
+```
+
+Residual geometry:
+
+```math
+E=C-\hat{C}
+```
+
+---
+
+### 10D.4 Frobenius decomposition
+
+Because the fitted component is an orthogonal least-squares projection:
+
+```math
+\|C\|_F^2=\|\hat{C}\|_F^2+\|C-\hat{C}\|_F^2
+```
+
+Interpretation:
+
+```text
+Total centered geometry
+=
+Magnitude-explained geometry
++
+Residual geometry
+```
+
+---
+
+### 10D.5 Magnitude-axis R²
+
+Define:
+
+```math
+R^2=\frac{\|\hat{C}\|_F^2}{\|C\|_F^2}
+```
+
+---
+
+### 10D.6 Results
+
+| Model | Explained variance |
+|---|---:|
+| Linear magnitude axis | 8.13% |
+| Log magnitude axis | 7.79% |
+| PC1 | 38.81% |
+
+Exact values:
+
+```text
+Linear magnitude R² = 0.081254
+Log magnitude R² = 0.077927
+PC1 explained variance = 0.3881
+```
+
+---
+
+### 10D.7 Comparison with PC1
+
+PC1 is the best unconstrained one-dimensional direction.
+
+Magnitude-axis regression is constrained by numerical ordering.
+
+```math
+\frac{0.081254}{0.3881}\approx0.209
+```
+
+```math
+\frac{0.077927}{0.3881}\approx0.201
+```
+
+Therefore:
+
+| Comparison | Ratio |
+|---|---:|
+| Linear magnitude / PC1 | 0.209 |
+| Log magnitude / PC1 | 0.201 |
+
+Interpretation:
+
+- The best linear magnitude axis explains only about 21% as much total variance as PC1.
+- The best log-magnitude axis explains only about 20% as much total variance as PC1.
+- The dominant one-dimensional structure is not aligned strongly with numerical magnitude.
+
+---
+
+# Step 10E — Permutation Test for Magnitude-Axis R²
+
+### 10E.1 Motivation
+
+Least squares always finds some best-fitting magnitude direction.
+
+Therefore:
+
+```text
+R² > 0
+```
+
+does not by itself imply meaningful magnitude structure.
+
+---
+
+### 10E.2 Permutation procedure
+
+- Keep the neural geometry fixed.
+- Randomly permute the labels $1,\ldots,9$.
+- Fit the best magnitude direction for each random ordering.
+- Calculate $R^2$.
+- Repeat:
+
+```text
+20,000 permutations
+```
+
+---
+
+### 10E.3 Linear magnitude results
+
+| Quantity | Result |
+|---|---:|
+| Observed $R^2$ | 0.081254 |
+| Observed explained variance | 8.13% |
+| Null mean $R^2$ | 0.125309 |
+| Null mean explained variance | 12.53% |
+| Null 95th percentile | 0.222340 |
+| Permutation p | 0.911004 |
+
+---
+
+### 10E.4 Log magnitude results
+
+| Quantity | Result |
+|---|---:|
+| Observed $R^2$ | 0.077927 |
+| Observed explained variance | 7.79% |
+| Null mean $R^2$ | 0.125387 |
+| Null mean explained variance | 12.54% |
+| Null 95th percentile | 0.223675 |
+| Permutation p | 0.944803 |
+
+---
+
+### 10E.5 Interpretation
+
+For the linear magnitude model:
+
+```text
+Observed R² = 8.13%
+Typical shuffled ordering ≈ 12.53%
+Permutation p = 0.911
+```
+
+For the log magnitude model:
+
+```text
+Observed R² = 7.79%
+Typical shuffled ordering ≈ 12.54%
+Permutation p = 0.945
+```
+
+Therefore:
+
+- The real numerical ordering does not explain unusually large one-dimensional variance.
+- Most random label orderings explain at least as much variance as the real numerical ordering.
+- The numerical magnitude axis is not a privileged one-dimensional organization of the YFF posterior-mean geometry.
+
+---
+
+# Final Step 9–10 Summary
+
+| Metric | YFF result |
+|---|---:|
+| Mean transition angle | 118.61° |
+| Transition-angle SD | 11.06° |
+| Regular-simplex reference | 120° |
+| Number-line transition reference | 0° |
+| Linear-distance Pearson | -0.266 |
+| Linear-distance Spearman | -0.213 |
+| Linear Pearson permutation p | 0.145 |
+| Linear Spearman permutation p | 0.223 |
+| Log-distance Pearson | -0.221 |
+| Log-distance Spearman | -0.139 |
+| Log Pearson permutation p | 0.397 |
+| Log Spearman permutation p | 0.619 |
+| Linear magnitude-axis $R^2$ | 8.13% |
+| Log magnitude-axis $R^2$ | 7.79% |
+| PC1 explained variance | 38.81% |
+| Linear magnitude null mean $R^2$ | 12.53% |
+| Log magnitude null mean $R^2$ | 12.54% |
+| Linear magnitude permutation p | 0.911 |
+| Log magnitude permutation p | 0.945 |
+
+---
+
+# Current YFF Interpretation
+
+```text
+Posterior-mean condition geometry:
+```
+
+- Affine rank is 8.
+- Sequential numerical trajectory is strongly bent.
+- Mean transition angle is close to 120°.
+- Euclidean neural distance does not increase with numerical distance.
+- Logarithmic numerical distance does not improve the relationship.
+- Linear magnitude explains only 8.13% of total centered geometry.
+- Log magnitude explains only 7.79%.
+- PC1 explains 38.81%.
+- Random number orderings usually explain more one-dimensional variance than the true numerical ordering.
+
+```text
+Conclusion:
+```
+
+> **YFF posterior-mean number representations show no evidence for a privileged one-dimensional linear or logarithmic number-line organization. The dominant structure is high-dimensional, with a strongly bent numerical trajectory and weak alignment between the true numerical ordering and the principal geometric directions.**
