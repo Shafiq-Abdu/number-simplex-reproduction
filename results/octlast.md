@@ -814,6 +814,8 @@ Therefore the nine posterior-mean number centers are **affinely independent**.
 ---
 
 ## Affine independence and simplex structure
+![alt text](image-12.png)
+
 
 For nine points, affine independence means that the eight vectors
 
