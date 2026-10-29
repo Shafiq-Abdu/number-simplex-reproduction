@@ -3005,13 +3005,12 @@ All subjects:
     no privileged linear/log magnitude axis
 ```
 
-The most appropriate current description is:
+
 
 > **The Bayesian posterior-mean number representations are consistently high-dimensional and strongly non-line-like across subjects. The nine condition centers are affinely independent in all subjects, but their simplex shapes vary substantially from relatively isotropic to strongly anisotropic. Numerical magnitude does not appear to define a privileged one-dimensional organization of the condition-mean geometry.**
 
 ---
 
-# Important Cautions
 
 - Rank 8 alone is not strong evidence for a biologically special simplex.
 - Nine generic continuous points in a high-dimensional space may naturally have affine rank 8.
@@ -3080,7 +3079,7 @@ Main question:
 
 ---
 
-## 3. Trial-Level Neural Geometry
+## 3. Trial-Level Neural Geometry (paper reproduction)
 
 Return to individual presentations rather than nine posterior means.
 
@@ -3128,3 +3127,316 @@ generic high-dimensional irregular geometry
 ```
 
 That distinction requires the matched-control and trial-level analyses.
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>subject</th>
+      <th>n_features</th>
+      <th>affine_rank</th>
+      <th>pc1_variance</th>
+      <th>effective_rank</th>
+      <th>participation_ratio</th>
+      <th>distance_cv</th>
+      <th>gram_error</th>
+      <th>centroid_angle_mean</th>
+      <th>centroid_angle_sd</th>
+      <th>...</th>
+      <th>condition_number</th>
+      <th>isotropy_ratio</th>
+      <th>linear_pearson_r</th>
+      <th>linear_pearson_perm_p</th>
+      <th>linear_spearman_rho</th>
+      <th>linear_spearman_perm_p</th>
+      <th>linear_magnitude_r2</th>
+      <th>linear_magnitude_perm_p</th>
+      <th>log_magnitude_r2</th>
+      <th>log_magnitude_perm_p</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>YFF</td>
+      <td>333</td>
+      <td>8</td>
+      <td>0.3881</td>
+      <td>6.2332</td>
+      <td>4.7730</td>
+      <td>0.1723</td>
+      <td>0.8223</td>
+      <td>97.2032</td>
+      <td>12.9523</td>
+      <td>...</td>
+      <td>2.6301</td>
+      <td>0.3802</td>
+      <td>-0.2661</td>
+      <td>0.1452</td>
+      <td>-0.2132</td>
+      <td>0.2229</td>
+      <td>0.0813</td>
+      <td>0.9110</td>
+      <td>0.0779</td>
+      <td>0.9448</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>YFI</td>
+      <td>261</td>
+      <td>8</td>
+      <td>0.3473</td>
+      <td>6.6876</td>
+      <td>5.4210</td>
+      <td>0.2084</td>
+      <td>0.6897</td>
+      <td>96.6803</td>
+      <td>6.8130</td>
+      <td>...</td>
+      <td>2.2678</td>
+      <td>0.4410</td>
+      <td>0.0954</td>
+      <td>0.7341</td>
+      <td>-0.0007</td>
+      <td>0.9982</td>
+      <td>0.1408</td>
+      <td>0.2941</td>
+      <td>0.1344</td>
+      <td>0.2559</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>YFJ</td>
+      <td>405</td>
+      <td>8</td>
+      <td>0.4838</td>
+      <td>5.3588</td>
+      <td>3.6375</td>
+      <td>0.2606</td>
+      <td>1.0951</td>
+      <td>96.6570</td>
+      <td>15.6715</td>
+      <td>...</td>
+      <td>3.2284</td>
+      <td>0.3097</td>
+      <td>-0.1535</td>
+      <td>0.5253</td>
+      <td>-0.0299</td>
+      <td>0.8724</td>
+      <td>0.0838</td>
+      <td>0.7234</td>
+      <td>0.0995</td>
+      <td>0.5278</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>YFK</td>
+      <td>396</td>
+      <td>8</td>
+      <td>0.3424</td>
+      <td>6.6545</td>
+      <td>5.4296</td>
+      <td>0.1510</td>
+      <td>0.6880</td>
+      <td>97.1387</td>
+      <td>11.3899</td>
+      <td>...</td>
+      <td>2.4094</td>
+      <td>0.4150</td>
+      <td>-0.0602</td>
+      <td>0.7745</td>
+      <td>0.1761</td>
+      <td>0.3120</td>
+      <td>0.1367</td>
+      <td>0.2830</td>
+      <td>0.1339</td>
+      <td>0.2986</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>YFL</td>
+      <td>513</td>
+      <td>8</td>
+      <td>0.4078</td>
+      <td>6.1119</td>
+      <td>4.5558</td>
+      <td>0.1917</td>
+      <td>0.8695</td>
+      <td>97.0875</td>
+      <td>13.0823</td>
+      <td>...</td>
+      <td>2.7294</td>
+      <td>0.3664</td>
+      <td>0.0222</td>
+      <td>0.9243</td>
+      <td>0.2356</td>
+      <td>0.1643</td>
+      <td>0.1516</td>
+      <td>0.2181</td>
+      <td>0.1764</td>
+      <td>0.1384</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>YFM</td>
+      <td>549</td>
+      <td>8</td>
+      <td>0.4321</td>
+      <td>5.9265</td>
+      <td>4.2670</td>
+      <td>0.2259</td>
+      <td>0.9353</td>
+      <td>96.9141</td>
+      <td>12.3381</td>
+      <td>...</td>
+      <td>2.7132</td>
+      <td>0.3686</td>
+      <td>-0.1751</td>
+      <td>0.4298</td>
+      <td>-0.0160</td>
+      <td>0.9334</td>
+      <td>0.0982</td>
+      <td>0.6075</td>
+      <td>0.1142</td>
+      <td>0.4148</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>YFP</td>
+      <td>387</td>
+      <td>8</td>
+      <td>0.5274</td>
+      <td>4.9400</td>
+      <td>3.2063</td>
+      <td>0.2412</td>
+      <td>1.2227</td>
+      <td>97.2400</td>
+      <td>19.6881</td>
+      <td>...</td>
+      <td>3.4839</td>
+      <td>0.2870</td>
+      <td>-0.0281</td>
+      <td>0.8615</td>
+      <td>-0.0270</td>
+      <td>0.8813</td>
+      <td>0.1017</td>
+      <td>0.4725</td>
+      <td>0.1096</td>
+      <td>0.4298</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>YFR</td>
+      <td>585</td>
+      <td>8</td>
+      <td>0.2247</td>
+      <td>7.5585</td>
+      <td>7.1213</td>
+      <td>0.0812</td>
+      <td>0.3513</td>
+      <td>97.1641</td>
+      <td>6.6397</td>
+      <td>...</td>
+      <td>1.7626</td>
+      <td>0.5673</td>
+      <td>-0.1417</td>
+      <td>0.4653</td>
+      <td>0.0090</td>
+      <td>0.9587</td>
+      <td>0.1330</td>
+      <td>0.2700</td>
+      <td>0.1413</td>
+      <td>0.1800</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>YFS</td>
+      <td>531</td>
+      <td>8</td>
+      <td>0.2361</td>
+      <td>7.4882</td>
+      <td>6.9754</td>
+      <td>0.0799</td>
+      <td>0.3832</td>
+      <td>97.1892</td>
+      <td>7.7283</td>
+      <td>...</td>
+      <td>1.8030</td>
+      <td>0.5546</td>
+      <td>-0.1016</td>
+      <td>0.5638</td>
+      <td>-0.1679</td>
+      <td>0.3017</td>
+      <td>0.1194</td>
+      <td>0.5279</td>
+      <td>0.1153</td>
+      <td>0.6389</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>YFT</td>
+      <td>468</td>
+      <td>8</td>
+      <td>0.2383</td>
+      <td>7.3817</td>
+      <td>6.7840</td>
+      <td>0.0891</td>
+      <td>0.4234</td>
+      <td>97.1907</td>
+      <td>8.1381</td>
+      <td>...</td>
+      <td>1.7634</td>
+      <td>0.5671</td>
+      <td>-0.1775</td>
+      <td>0.3301</td>
+      <td>-0.1016</td>
+      <td>0.5633</td>
+      <td>0.1033</td>
+      <td>0.8216</td>
+      <td>0.1017</td>
+      <td>0.8501</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>YFU</td>
+      <td>558</td>
+      <td>8</td>
+      <td>0.4577</td>
+      <td>5.6859</td>
+      <td>3.9594</td>
+      <td>0.1936</td>
+      <td>1.0102</td>
+      <td>97.2131</td>
+      <td>18.3362</td>
+      <td>...</td>
+      <td>2.7807</td>
+      <td>0.3596</td>
+      <td>-0.0134</td>
+      <td>0.9380</td>
+      <td>-0.0942</td>
+      <td>0.5638</td>
+      <td>0.1413</td>
+      <td>0.2706</td>
+      <td>0.1195</td>
+      <td>0.3912</td>
+    </tr>
+  </tbody>
+</table>
+<p>11 rows × 23 columns</p>
+</div>
