@@ -3440,3 +3440,666 @@ That distinction requires the matched-control and trial-level analyses.
 </table>
 <p>11 rows × 23 columns</p>
 </div>
+
+
+
+
+# Bayesian Posterior-Mean Geometry
+
+## Formulas Used in Steps 1–10
+
+---
+
+# Step 1 — Posterior-Mean Lambda Matrix
+
+For number class \(k\) and neural feature \(j\):
+
+```math
+X_{ij}\mid Y=k,\lambda_{kj}\sim \mathrm{Poisson}(\lambda_{kj})
+```
+
+Gamma prior:
+
+```math
+\lambda_{kj}\sim \mathrm{Gamma}(\alpha,\beta)
+```
+
+Training spike-count sum:
+
+```math
+S_{kj}=\sum_{i:Y_i=k}X_{ij}
+```
+
+Number of presentations in class \(k\):
+
+```math
+n_k=\#\{i:Y_i=k\}
+```
+
+Posterior parameters:
+
+```math
+\alpha_{kj}^{*}=\alpha+S_{kj}
+```
+
+```math
+\beta_k^{*}=\beta+n_k
+```
+
+Posterior mean:
+
+```math
+\lambda_{kj}^{*}
+=
+E[\lambda_{kj}\mid D]
+=
+\frac{\alpha+S_{kj}}{\beta+n_k}
+```
+
+Subject-level posterior-mean matrix:
+
+```math
+\Lambda=
+\begin{bmatrix}
+\lambda_1\\
+\lambda_2\\
+\vdots\\
+\lambda_9
+\end{bmatrix}
+\in
+\mathbb{R}^{9\times p}
+```
+
+where each row is:
+
+```math
+\lambda_k
+=
+(\lambda_{k1}^{*},\ldots,\lambda_{kp}^{*})
+```
+
+---
+
+# Step 2 — Centering
+
+Centroid of the nine number representations:
+
+```math
+\bar{\lambda}
+=
+\frac{1}{9}
+\sum_{k=1}^{9}\lambda_k
+```
+
+Centered representation:
+
+```math
+C_k
+=
+\lambda_k-\bar{\lambda}
+```
+
+Centered matrix:
+
+```math
+C
+=
+\Lambda
+-
+\mathbf{1}\bar{\lambda}^{\top}
+```
+
+Centering property:
+
+```math
+\sum_{k=1}^{9}C_k=0
+```
+
+Therefore:
+
+```math
+\mathrm{rank}(C)\leq 8
+```
+
+Distance from each number representation to the centroid:
+
+```math
+r_k
+=
+\|C_k\|_2
+```
+
+Mean radius:
+
+```math
+\bar{r}
+=
+\frac{1}{9}
+\sum_{k=1}^{9}r_k
+```
+
+Radius coefficient of variation:
+
+```math
+CV_r
+=
+\frac{\mathrm{SD}(r_k)}
+{\mathrm{mean}(r_k)}
+```
+
+---
+
+# Step 3 — SVD and Dimensionality
+
+Singular value decomposition:
+
+```math
+C
+=
+U\Sigma V^{\top}
+```
+
+Singular values:
+
+```math
+\sigma_1\geq\sigma_2\geq\cdots\geq\sigma_8\geq0
+```
+
+Variance associated with singular value \(i\):
+
+```math
+v_i=\sigma_i^2
+```
+
+Fraction of total variance:
+
+```math
+p_i
+=
+\frac{\sigma_i^2}
+{\sum_j\sigma_j^2}
+```
+
+Cumulative variance:
+
+```math
+P_m
+=
+\sum_{i=1}^{m}p_i
+```
+
+PC1 explained variance:
+
+```math
+p_1
+=
+\frac{\sigma_1^2}
+{\sum_j\sigma_j^2}
+```
+
+Affine dimension:
+
+```math
+d_{\mathrm{affine}}
+=
+\mathrm{rank}(C)
+```
+
+Effective rank:
+
+```math
+r_{\mathrm{eff}}
+=
+\exp
+\left(
+-\sum_i p_i\log p_i
+\right)
+```
+
+Participation ratio:
+
+```math
+PR
+=
+\frac{1}
+{\sum_i p_i^2}
+```
+
+Condition number:
+
+```math
+\kappa
+=
+\frac{\sigma_1}{\sigma_8}
+```
+
+Isotropy ratio:
+
+```math
+I
+=
+\frac{\sigma_8}{\sigma_1}
+=
+\frac{1}{\kappa}
+```
+
+PCA coordinates:
+
+```math
+Z
+=
+U\Sigma
+```
+
+---
+
+# Step 4 — Pairwise Euclidean Distances
+
+Distance between number representations \(i\) and \(j\):
+
+```math
+D_{ij}
+=
+\|\lambda_i-\lambda_j\|_2
+```
+
+Equivalent centered form:
+
+```math
+D_{ij}
+=
+\|C_i-C_j\|_2
+```
+
+Number of unique number pairs:
+
+```math
+\binom{9}{2}=36
+```
+
+Mean pairwise distance:
+
+```math
+\bar{D}
+=
+\frac{1}{36}
+\sum_{i<j}D_{ij}
+```
+
+Distance standard deviation:
+
+```math
+SD_D
+=
+\sqrt{
+\frac{1}{36}
+\sum_{i<j}
+(D_{ij}-\bar{D})^2
+}
+```
+
+Pairwise-distance coefficient of variation:
+
+```math
+CV_D
+=
+\frac{SD_D}{\bar{D}}
+```
+
+Maximum-to-minimum distance ratio:
+
+```math
+R_D
+=
+\frac{D_{\max}}
+{D_{\min}}
+```
+
+---
+
+# Step 5 — PCA Visualization
+
+PCA coordinates:
+
+```math
+Z
+=
+U\Sigma
+```
+
+First principal-component coordinate:
+
+```math
+Z_{k1}
+```
+
+First two-PC explained variance:
+
+```math
+p_1+p_2
+```
+
+First three-PC explained variance:
+
+```math
+p_1+p_2+p_3
+```
+
+---
+
+# Step 6 — Gram Matrix and Regular-Simplex Comparison
+
+Empirical Gram matrix:
+
+```math
+G
+=
+CC^{\top}
+```
+
+Gram-matrix entries:
+
+```math
+G_{ij}
+=
+C_i^{\top}C_j
+```
+
+Diagonal entries:
+
+```math
+G_{ii}
+=
+\|C_i\|_2^2
+```
+
+Mean squared radius:
+
+```math
+r_{\mathrm{match}}^2
+=
+\frac{1}{9}
+\sum_{i=1}^{9}G_{ii}
+```
+
+Matched radius:
+
+```math
+r_{\mathrm{match}}
+=
+\sqrt{
+r_{\mathrm{match}}^2
+}
+```
+
+For a centered regular simplex with \(n=9\):
+
+```math
+G_{ii}^{\mathrm{reg}}
+=
+r_{\mathrm{match}}^2
+```
+
+For \(i\neq j\):
+
+```math
+G_{ij}^{\mathrm{reg}}
+=
+-\frac{r_{\mathrm{match}}^2}{8}
+```
+
+Relative Gram error:
+
+```math
+E_G
+=
+\frac{
+\|G-G_{\mathrm{reg}}\|_F
+}{
+\|G_{\mathrm{reg}}\|_F
+}
+```
+
+Frobenius norm:
+
+```math
+\|A\|_F
+=
+\sqrt{
+\sum_{i,j}A_{ij}^2
+}
+```
+
+Diagonal Gram RMSE:
+
+```math
+RMSE_{\mathrm{diag}}
+=
+\sqrt{
+\frac{1}{9}
+\sum_i
+(G_{ii}-G_{ii}^{\mathrm{reg}})^2
+}
+```
+
+Off-diagonal Gram RMSE:
+
+```math
+RMSE_{\mathrm{off}}
+=
+\sqrt{
+\frac{1}{72}
+\sum_{i\neq j}
+(G_{ij}-G_{ij}^{\mathrm{reg}})^2
+}
+```
+
+---
+
+# Step 7 — Centroid / Gram Angles
+
+Cosine of the angle between centered number representations:
+
+```math
+\cos\theta_{ij}
+=
+\frac{
+C_i^{\top}C_j
+}{
+\|C_i\|_2
+\|C_j\|_2
+}
+```
+
+Angle:
+
+```math
+\theta_{ij}
+=
+\cos^{-1}
+\left(
+\frac{
+C_i^{\top}C_j
+}{
+\|C_i\|_2
+\|C_j\|_2
+}
+\right)
+```
+
+For a centered regular simplex:
+
+```math
+\cos\theta_{\mathrm{reg}}
+=
+-\frac{1}{8}
+```
+
+Therefore:
+
+```math
+\theta_{\mathrm{reg}}
+=
+\cos^{-1}
+\left(
+-\frac{1}{8}
+\right)
+\approx97.18^\circ
+```
+
+Mean centroid angle:
+
+```math
+\bar{\theta}
+=
+\frac{1}{36}
+\sum_{i<j}\theta_{ij}
+```
+
+Centroid-angle SD:
+
+```math
+SD_{\theta}
+=
+\sqrt{
+\frac{1}{36}
+\sum_{i<j}
+(\theta_{ij}-\bar{\theta})^2
+}
+```
+
+---
+
+# Step 8 — Simplex Volume and Shape
+
+Choose one reference vertex, for example \(\lambda_1\).
+
+Edge matrix:
+
+```math
+A
+=
+\begin{bmatrix}
+\lambda_2-\lambda_1\\
+\lambda_3-\lambda_1\\
+\vdots\\
+\lambda_9-\lambda_1
+\end{bmatrix}
+```
+
+SVD of edge matrix:
+
+```math
+A
+=
+U_A\Sigma_A V_A^{\top}
+```
+
+8-dimensional simplex volume:
+
+```math
+V_8
+=
+\frac{
+\sqrt{
+\det(AA^{\top})
+}
+}{
+8!
+}
+```
+
+Equivalent singular-value form:
+
+```math
+V_8
+=
+\frac{
+\prod_{i=1}^{8}s_i
+}{
+8!
+}
+```
+
+where \(s_i\) are the eight singular values of \(A\).
+
+Matched regular-simplex edge length:
+
+```math
+a_{\mathrm{reg}}
+=
+\sqrt{
+\frac{2nr^2}{n-1}
+}
+```
+
+with:
+
+```math
+n=9
+```
+
+Therefore:
+
+```math
+a_{\mathrm{reg}}
+=
+\sqrt{
+\frac{18}{8}r^2
+}
+```
+
+Volume of a regular \(d\)-simplex:
+
+```math
+V_{\mathrm{reg}}
+=
+\frac{
+\sqrt{d+1}
+}{
+d!\sqrt{2^d}
+}
+a^d
+```
+
+For \(d=8\):
+
+```math
+V_{\mathrm{reg}}
+=
+\frac{
+3
+}{
+8!\sqrt{2^8}
+}
+a^8
+```
+
+Normalized volume:
+
+```math
+V_{\mathrm{norm}}
+=
+\frac{
+V_{\mathrm{emp}}
+}{
+V_{\mathrm{reg}}
+}
+```
+
+Effective-rank fraction:
+
+```math
+f_{\mathrm{eff}}
+=
+\frac{
+r_{\mathrm{eff}}
+}{
+8
+}
+```
+
+Participation-ratio fraction:
+
+```math
+f_{\
