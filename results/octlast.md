@@ -4102,4 +4102,578 @@ r_{\mathrm{eff}}
 Participation-ratio fraction:
 
 ```math
-f_{\
+f_{\mathrm{PR}}
+=
+\frac{
+PR
+}{
+8
+}
+```
+
+---
+
+# Step 9 — Sequential Transition Angles
+
+Sequential transition vector:
+
+```math
+d_k
+=
+\lambda_{k+1}-\lambda_k
+```
+
+for:
+
+```math
+k=1,\ldots,8
+```
+
+Transition-vector length:
+
+```math
+L_k
+=
+\|d_k\|_2
+```
+
+Angle between consecutive transitions:
+
+```math
+\phi_k
+=
+\cos^{-1}
+\left(
+\frac{
+d_k^{\top}d_{k+1}
+}{
+\|d_k\|_2
+\|d_{k+1}\|_2
+}
+\right)
+```
+
+for:
+
+```math
+k=1,\ldots,7
+```
+
+Straight number-line reference:
+
+```math
+\phi_{\mathrm{line}}
+=
+0^\circ
+```
+
+Regular-simplex reference:
+
+```math
+\phi_{\mathrm{simplex}}
+=
+120^\circ
+```
+
+Mean transition angle:
+
+```math
+\bar{\phi}
+=
+\frac{1}{7}
+\sum_{k=1}^{7}\phi_k
+```
+
+Transition-angle SD:
+
+```math
+SD_{\phi}
+=
+\sqrt{
+\frac{1}{7}
+\sum_{k=1}^{7}
+(\phi_k-\bar{\phi})^2
+}
+```
+
+---
+
+# Step 10A — Linear Numerical Distance vs Neural Distance
+
+Linear numerical distance:
+
+```math
+D_{\mathrm{num}}(i,j)
+=
+|i-j|
+```
+
+Neural distance:
+
+```math
+D_{\mathrm{neural}}(i,j)
+=
+\|\lambda_i-\lambda_j\|_2
+```
+
+Simple number-line prediction:
+
+```math
+D_{\mathrm{num}}\uparrow
+\quad\Rightarrow\quad
+D_{\mathrm{neural}}\uparrow
+```
+
+Pearson correlation:
+
+```math
+r
+=
+\frac{
+\sum_m
+(x_m-\bar{x})
+(y_m-\bar{y})
+}{
+\sqrt{
+\sum_m(x_m-\bar{x})^2
+}
+\sqrt{
+\sum_m(y_m-\bar{y})^2
+}
+}
+```
+
+where:
+
+```math
+x_m=D_{\mathrm{num}}
+```
+
+and:
+
+```math
+y_m=D_{\mathrm{neural}}
+```
+
+Spearman correlation:
+
+```math
+\rho
+=
+\mathrm{Pearson\ correlation\ of\ ranked\ values}
+```
+
+---
+
+# Step 10B — Logarithmic Numerical Distance
+
+Log-number coordinate:
+
+```math
+z_k
+=
+\log k
+```
+
+Logarithmic numerical distance:
+
+```math
+D_{\log}(i,j)
+=
+|\log i-\log j|
+```
+
+Compare:
+
+```math
+D_{\log}(i,j)
+```
+
+with:
+
+```math
+D_{\mathrm{neural}}(i,j)
+```
+
+using Pearson and Spearman correlations.
+
+---
+
+# Step 10C — Permutation Test for RDM Correlations
+
+Observed statistic:
+
+```math
+T_{\mathrm{obs}}
+=
+r_{\mathrm{obs}}
+```
+
+or:
+
+```math
+T_{\mathrm{obs}}
+=
+\rho_{\mathrm{obs}}
+```
+
+Randomly permute number labels:
+
+```math
+\pi(1),\pi(2),\ldots,\pi(9)
+```
+
+Recalculate the statistic:
+
+```math
+T_b
+```
+
+for permutation \(b\).
+
+Two-sided permutation p-value:
+
+```math
+p_{\mathrm{two}}
+=
+\frac{
+1+
+\sum_{b=1}^{B}
+I(
+|T_b|
+\geq
+|T_{\mathrm{obs}}|
+)
+}{
+B+1
+}
+```
+
+Positive-tail permutation p-value:
+
+```math
+p_{+}
+=
+\frac{
+1+
+\sum_{b=1}^{B}
+I(
+T_b
+\geq
+T_{\mathrm{obs}}
+)
+}{
+B+1
+}
+```
+
+Number of permutations:
+
+```math
+B=20000
+```
+
+---
+
+# Step 10D — One-Dimensional Magnitude Axis
+
+Centered numerical predictor:
+
+```math
+x_k
+=
+k-\bar{k}
+```
+
+For numbers 1–9:
+
+```math
+x
+=
+(-4,-3,-2,-1,0,1,2,3,4)
+```
+
+Magnitude-axis model:
+
+```math
+C_k
+\approx
+x_kb
+```
+
+where:
+
+```math
+b\in\mathbb{R}^{p}
+```
+
+Least-squares solution:
+
+```math
+b
+=
+\frac{
+\sum_k x_k C_k
+}{
+\sum_k x_k^2
+}
+```
+
+Predicted geometry:
+
+```math
+\hat{C}_k
+=
+x_kb
+```
+
+Residual geometry:
+
+```math
+E
+=
+C-\hat{C}
+```
+
+Frobenius decomposition:
+
+```math
+\|C\|_F^2
+=
+\|\hat{C}\|_F^2
++
+\|C-\hat{C}\|_F^2
+```
+
+Magnitude-axis explained variance:
+
+```math
+R^2
+=
+\frac{
+\|\hat{C}\|_F^2
+}{
+\|C\|_F^2
+}
+```
+
+Residual fraction:
+
+```math
+1-R^2
+=
+\frac{
+\|C-\hat{C}\|_F^2
+}{
+\|C\|_F^2
+}
+```
+
+Log-magnitude predictor:
+
+```math
+x_k^{\log}
+=
+\log k
+-
+\frac{1}{9}
+\sum_{j=1}^{9}\log j
+```
+
+Log-magnitude model:
+
+```math
+C_k
+\approx
+x_k^{\log}b_{\log}
+```
+
+---
+
+# Step 10E — Permutation Test for Magnitude-Axis R²
+
+Observed magnitude-axis variance:
+
+```math
+R_{\mathrm{obs}}^2
+```
+
+Randomly permute number labels:
+
+```math
+\pi(1),\ldots,\pi(9)
+```
+
+Fit the magnitude axis for every random ordering:
+
+```math
+R_b^2
+```
+
+One-sided permutation p-value:
+
+```math
+p
+=
+\frac{
+1+
+\sum_{b=1}^{B}
+I(
+R_b^2
+\geq
+R_{\mathrm{obs}}^2
+)
+}{
+B+1
+}
+```
+
+Null mean:
+
+```math
+\bar{R}_{\mathrm{null}}^2
+=
+\frac{1}{B}
+\sum_{b=1}^{B}R_b^2
+```
+
+95th percentile of the null:
+
+```math
+Q_{0.95}
+=
+95\mathrm{th\ percentile}
+\left(
+R_1^2,\ldots,R_B^2
+\right)
+```
+
+---
+
+# Core Reference Formulas
+
+## Maximum affine dimension
+
+For \(n=9\) centered condition means:
+
+```math
+d_{\max}
+=
+n-1
+=
+8
+```
+
+---
+
+## Regular-simplex centroid angle
+
+```math
+\theta_{\mathrm{centroid}}
+=
+\cos^{-1}
+\left(
+-\frac{1}{8}
+\right)
+\approx97.18^\circ
+```
+
+---
+
+## Regular-simplex sequential transition angle
+
+```math
+\theta_{\mathrm{transition}}
+=
+120^\circ
+```
+
+---
+
+## Straight number-line transition angle
+
+```math
+\theta_{\mathrm{line}}
+=
+0^\circ
+```
+
+---
+
+## Perfect regular-simplex shape references
+
+```math
+CV_D=0
+```
+
+```math
+E_G=0
+```
+
+```math
+SD_{\theta}=0
+```
+
+```math
+\kappa=1
+```
+
+```math
+I=1
+```
+
+```math
+V_{\mathrm{norm}}=1
+```
+
+```math
+r_{\mathrm{eff}}=8
+```
+
+```math
+PR=8
+```
+
+---
+
+# Complete Analysis Flow
+
+```text
+Gamma–Poisson posterior means
+        ↓
+Lambda matrix
+        ↓
+Centering
+        ↓
+SVD / affine rank
+        ↓
+Effective rank / participation ratio
+        ↓
+Pairwise Euclidean distances
+        ↓
+PCA coordinates
+        ↓
+Gram matrix
+        ↓
+Regular-simplex Gram comparison
+        ↓
+Centroid angles
+        ↓
+8D simplex volume
+        ↓
+Condition number / isotropy
+        ↓
+Sequential transition angles
+        ↓
+Linear numerical-distance RDM
+        ↓
+Log numerical-distance RDM
+        ↓
+Permutation tests
+        ↓
+Linear magnitude-axis regression
+        ↓
+Log magnitude-axis regression
+        ↓
+Magnitude-axis permutation tests
+```
