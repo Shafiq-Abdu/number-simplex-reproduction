@@ -2376,3 +2376,755 @@ Conclusion:
 ```
 
 > **YFF posterior-mean number representations show no evidence for a privileged one-dimensional linear or logarithmic number-line organization. The dominant structure is high-dimensional, with a strongly bent numerical trajectory and weak alignment between the true numerical ordering and the principal geometric directions.**
+
+
+| Our step | Analysis | Origin | Exact paper reproduction? |
+|---|---|---|---|
+| 1 | Bayesian posterior-mean \(\Lambda\) representation | **Our addition** | No |
+| 2 | Centering \(C=\Lambda-\bar\Lambda\) | **Our mathematical preprocessing** | No |
+| 3 | SVD, affine rank, effective rank, participation ratio | **Our addition** | No |
+| 4 | Pairwise Euclidean RDM | **Paper-inspired** | Partly |
+| 4 | Pairwise-distance CV / max-min ratio | **Our addition** | No |
+| 5 | PCA visualization | **Directly paper-inspired** | Conceptually yes, not exact input |
+| 6 | Gram matrix \(CC^\top\) | **Our addition** | No |
+| 6 | Ideal regular-simplex Gram comparison | **Our addition** | No |
+| 6 | Relative Gram/Frobenius error and RMSE | **Our addition** | No |
+| 7 | Centroid/Gram angles | **Our addition** | No |
+| 8 | 8D simplex volume | **Our addition** | No |
+| 8 | condition number / isotropy / normalized volume | **Our addition** | No |
+| 9 | sequential transition angles | **Directly from paper** | Partial |
+| 10A | neural distance vs numerical distance | **Directly from paper** | Partial |
+| 10B | log-distance RDM correlation | **Our extension inspired by paper** | No |
+| 10C | label-permutation test of RDM correlation | **Our addition** | No |
+| 10D | linear/log magnitude-axis variance | **Strongly paper-inspired** | Partial |
+| 10E | permutation of magnitude-axis \(R^2\) | **Our addition** | No |
+
+
+
+-------
+
+
+# Cross-Subject Bayesian Posterior-Mean Geometry
+
+## Analysis Scope
+
+- Subjects:
+
+```text
+YFF, YFI, YFJ, YFK, YFL, YFM, YFP, YFR, YFS, YFT, YFU
+```
+
+- Number conditions:
+
+```math
+1,\ldots,9
+```
+
+- For each subject:
+
+```math
+\Lambda_s \in \mathbb{R}^{9\times p_s}
+```
+
+- Rows = numbers 1–9.
+- Columns = neuron × temporal-bin features.
+- Geometry analyzed using Bayesian Gamma–Poisson posterior means.
+- Same frozen analysis pipeline used for all 11 subjects.
+- 20,000 permutations used for number-line tests.
+- Random seed:
+
+```text
+42
+```
+
+---
+
+# Block 1 — Dimensionality
+
+| Subject | Features | Affine rank | PC1 variance | Effective rank | Participation ratio |
+|---|---:|---:|---:|---:|---:|
+| YFF | 333 | **8** | 38.81% | 6.23 | 4.77 |
+| YFI | 261 | **8** | 34.73% | 6.69 | 5.42 |
+| YFJ | 405 | **8** | 48.38% | 5.36 | 3.64 |
+| YFK | 396 | **8** | 34.24% | 6.65 | 5.43 |
+| YFL | 513 | **8** | 40.78% | 6.11 | 4.56 |
+| YFM | 549 | **8** | 43.21% | 5.93 | 4.27 |
+| YFP | 387 | **8** | **52.74%** | **4.94** | **3.21** |
+| YFR | 585 | **8** | **22.47%** | **7.56** | **7.12** |
+| YFS | 531 | **8** | **23.61%** | **7.49** | **6.98** |
+| YFT | 468 | **8** | **23.83%** | **7.38** | **6.78** |
+| YFU | 558 | **8** | 45.77% | 5.69 | 3.96 |
+
+## Main dimensionality facts
+
+- Maximum possible affine dimension for 9 centered condition means:
+
+```math
+9-1=8
+```
+
+- Every subject has:
+
+```math
+\boxed{\mathrm{rank}(C)=8}
+```
+
+- Therefore all nine posterior-mean centers are numerically affinely independent in every subject.
+- Each subject therefore defines a nondegenerate irregular 8-simplex at the condition-center level.
+- Rank alone does **not** establish a special biological simplex because generic continuous points in high dimension may also have rank 8.
+
+### Most evenly distributed across dimensions
+
+```text
+YFR, YFS, YFT
+```
+
+- Low PC1 variance.
+- Effective rank close to 8.
+- Participation ratio close to 8.
+
+### Most dominated by fewer directions
+
+```text
+YFP, YFJ, YFU
+```
+
+- Higher PC1 variance.
+- Lower effective rank.
+- Lower participation ratio.
+
+---
+
+# Block 2 — Simplex Shape and Regularity
+
+| Subject | Distance CV | Gram error | Centroid-angle SD | Normalized volume | Condition number | Isotropy ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| YFF | 0.172 | 0.822 | 12.95° | 0.431 | 2.630 | 0.380 |
+| YFI | 0.208 | 0.690 | 6.81° | 0.550 | 2.268 | 0.441 |
+| YFJ | 0.261 | 1.095 | 15.67° | 0.274 | 3.228 | 0.310 |
+| YFK | 0.151 | 0.688 | 11.39° | 0.527 | 2.409 | 0.415 |
+| YFL | 0.192 | 0.869 | 13.08° | 0.413 | 2.729 | 0.366 |
+| YFM | 0.226 | 0.935 | 12.34° | 0.386 | 2.713 | 0.369 |
+| YFP | 0.241 | **1.223** | **19.69°** | **0.214** | **3.484** | **0.287** |
+| YFR | **0.081** | **0.351** | **6.64°** | **0.804** | **1.763** | **0.567** |
+| YFS | **0.080** | **0.383** | 7.73° | **0.779** | **1.803** | **0.555** |
+| YFT | **0.089** | **0.423** | 8.14° | **0.740** | **1.763** | **0.567** |
+| YFU | 0.194 | 1.010 | **18.34°** | 0.343 | 2.781 | 0.360 |
+
+## Regular-simplex references
+
+For an exact matched regular 8-simplex:
+
+```math
+\mathrm{Distance\ CV}=0
+```
+
+```math
+\mathrm{Gram\ error}=0
+```
+
+```math
+\mathrm{Centroid\ angle\ SD}=0
+```
+
+```math
+\mathrm{Normalized\ volume}=1
+```
+
+```math
+\mathrm{Condition\ number}=1
+```
+
+```math
+\mathrm{Isotropy\ ratio}=1
+```
+
+Centroid-to-vertex angle:
+
+```math
+\theta_{\mathrm{regular}}
+=
+\cos^{-1}\left(-\frac{1}{8}\right)
+\approx97.18^\circ
+```
+
+## Important shape facts
+
+### Most regular / isotropic subjects
+
+```text
+YFR, YFS, YFT
+```
+
+These subjects consistently show:
+
+- lowest distance CV,
+- lowest Gram error,
+- high effective dimensionality,
+- high normalized volume,
+- low condition number,
+- high isotropy ratio.
+
+### Most irregular / anisotropic subjects
+
+```text
+YFP, YFJ, YFU
+```
+
+These subjects show:
+
+- stronger dominance of the first PCs,
+- higher Gram error,
+- lower normalized volume,
+- larger centroid-angle variability,
+- poorer isotropy.
+
+### Important distinction
+
+```math
+\boxed{
+\text{full affine rank}
+\neq
+\text{regular simplex}
+}
+```
+
+All subjects are rank 8, but their simplex shapes differ substantially.
+
+---
+
+# Block 3 — Sequential Transition Geometry
+
+Sequential transition vectors:
+
+```math
+d_k=\lambda_{k+1}-\lambda_k
+```
+
+Transition angle:
+
+```math
+\theta_k
+=
+\cos^{-1}
+\left(
+\frac{d_k^\top d_{k+1}}
+{\|d_k\|\|d_{k+1}\|}
+\right)
+```
+
+Reference values:
+
+```math
+\text{straight number line}=0^\circ
+```
+
+```math
+\text{regular simplex}=120^\circ
+```
+
+## Cross-subject results
+
+| Subject | Mean transition angle |
+|---|---:|
+| YFF | 118.61° |
+| YFI | 123.13° |
+| YFJ | 119.29° |
+| YFK | 119.42° |
+| YFL | 118.48° |
+| YFM | 115.12° |
+| YFP | 121.82° |
+| YFR | 118.06° |
+| YFS | 119.04° |
+| YFT | 120.16° |
+| YFU | 124.83° |
+
+## Main transition-angle facts
+
+- All subjects lie approximately within:
+
+```math
+115^\circ\text{ to }125^\circ
+```
+
+- All subjects are very far from the straight-line reference:
+
+```math
+0^\circ
+```
+
+- Mean transition angles are consistently close to:
+
+```math
+120^\circ
+```
+
+- Canonical number trajectory is strongly folded in every subject.
+
+### Important caution
+
+```text
+Transition angle alone does not establish regular-simplex geometry.
+```
+
+Example:
+
+- YFR has relatively regular geometry and mean angle 118.06°.
+- YFP has strongly irregular geometry and mean angle 121.82°.
+
+Therefore near-120° transition angles can coexist with very different overall simplex shapes.
+
+Matched controls are still required.
+
+---
+
+# Block 4 — Numerical Distance vs Neural Distance
+
+Neural distance:
+
+```math
+D_{\mathrm{neural}}(i,j)
+=
+\|\lambda_i-\lambda_j\|_2
+```
+
+Linear numerical distance:
+
+```math
+D_{\mathrm{num}}(i,j)=|i-j|
+```
+
+A simple number-line hypothesis predicts:
+
+```math
+D_{\mathrm{num}}\uparrow
+\quad\Rightarrow\quad
+D_{\mathrm{neural}}\uparrow
+```
+
+---
+
+## Linear-distance RDM results
+
+| Subject | Pearson \(r\) | Permutation \(p\) | Spearman \(\rho\) | Permutation \(p\) |
+|---|---:|---:|---:|---:|
+| YFF | -0.266 | 0.145 | -0.213 | 0.223 |
+| YFI | +0.095 | 0.734 | -0.001 | 0.998 |
+| YFJ | -0.154 | 0.525 | -0.030 | 0.872 |
+| YFK | -0.060 | 0.775 | +0.176 | 0.312 |
+| YFL | +0.022 | 0.924 | +0.236 | 0.164 |
+| YFM | -0.175 | 0.430 | -0.016 | 0.933 |
+| YFP | -0.028 | 0.862 | -0.027 | 0.881 |
+| YFR | -0.142 | 0.465 | +0.009 | 0.959 |
+| YFS | -0.102 | 0.564 | -0.168 | 0.302 |
+| YFT | -0.178 | 0.330 | -0.102 | 0.563 |
+| YFU | -0.013 | 0.938 | -0.094 | 0.564 |
+
+## Main RDM result
+
+```math
+\boxed{0/11\text{ subjects significant at }p<0.05}
+```
+
+- No consistent positive Pearson relationship.
+- No consistent monotonic Spearman relationship.
+- Most correlations lie close to zero.
+- Several correlations are negative.
+- Numerical separation does not reliably predict Euclidean neural separation.
+
+---
+
+# Block 5 — One-Dimensional Magnitude Axis
+
+Linear magnitude model:
+
+```math
+C_k\approx x_kb
+```
+
+with:
+
+```math
+x_k=k-\bar{k}
+```
+
+Magnitude-axis variance:
+
+```math
+R^2
+=
+\frac{\|\hat C\|_F^2}
+{\|C\|_F^2}
+```
+
+Permutation hypothesis:
+
+```text
+H0:
+The canonical numerical ordering explains no more
+one-dimensional variance than random label orderings.
+
+H1:
+The canonical numerical ordering explains more variance
+than random orderings.
+```
+
+---
+
+## Linear magnitude-axis results
+
+| Subject | Linear \(R^2\) | Permutation \(p\) |
+|---|---:|---:|
+| YFF | 8.13% | 0.911 |
+| YFI | 14.08% | 0.294 |
+| YFJ | 8.38% | 0.723 |
+| YFK | 13.67% | 0.283 |
+| YFL | **15.16%** | 0.218 |
+| YFM | 9.82% | 0.608 |
+| YFP | 10.17% | 0.473 |
+| YFR | 13.30% | 0.270 |
+| YFS | 11.94% | 0.528 |
+| YFT | 10.33% | 0.822 |
+| YFU | 14.13% | 0.271 |
+
+Result:
+
+```math
+\boxed{0/11\text{ subjects significant at }p<0.05}
+```
+
+---
+
+## Log magnitude-axis results
+
+| Subject | Log \(R^2\) | Permutation \(p\) |
+|---|---:|---:|
+| YFF | 7.79% | 0.945 |
+| YFI | 13.44% | 0.256 |
+| YFJ | 9.95% | 0.528 |
+| YFK | 13.39% | 0.299 |
+| YFL | **17.64%** | 0.138 |
+| YFM | 11.42% | 0.415 |
+| YFP | 10.96% | 0.430 |
+| YFR | 14.13% | 0.180 |
+| YFS | 11.53% | 0.639 |
+| YFT | 10.17% | 0.850 |
+| YFU | 11.95% | 0.391 |
+
+Result:
+
+```math
+\boxed{0/11\text{ subjects significant at }p<0.05}
+```
+
+---
+
+# Final Cross-Subject Facts
+
+## Fact 1 — Full affine dimension is universal
+
+```math
+\boxed{\mathrm{rank}=8\text{ in all 11 subjects}}
+```
+
+- Nine posterior-mean number centers are affinely independent in every subject.
+- All subjects define nondegenerate irregular 8-simplexes at the condition-center level.
+
+---
+
+## Fact 2 — Full rank does not imply equal geometry
+
+Subjects vary substantially in:
+
+- PC1 variance,
+- effective rank,
+- participation ratio,
+- Gram error,
+- distance CV,
+- normalized volume,
+- condition number,
+- isotropy ratio.
+
+Therefore:
+
+```math
+\boxed{
+\text{all subjects are 8D, but their 8D shapes are different}
+}
+```
+
+---
+
+## Fact 3 — YFR, YFS, and YFT are the most isotropic
+
+These subjects consistently show:
+
+- low PC1 variance,
+- effective rank close to 8,
+- high participation ratio,
+- low pairwise-distance CV,
+- low Gram error,
+- high normalized volume,
+- low condition number,
+- high isotropy ratio.
+
+```text
+Most regular / isotropic:
+YFR, YFS, YFT
+```
+
+---
+
+## Fact 4 — YFP, YFJ, and YFU are more anisotropic
+
+```text
+More irregular / anisotropic:
+YFP, YFJ, YFU
+```
+
+Especially YFP:
+
+```text
+PC1 variance        ≈ 52.74%
+Effective rank      ≈ 4.94
+Participation ratio ≈ 3.21
+Gram error          ≈ 1.223
+Normalized volume   ≈ 0.214
+Condition number    ≈ 3.48
+```
+
+---
+
+## Fact 5 — Sequential trajectories are strongly folded
+
+Across all subjects:
+
+```math
+\bar{\theta}_{\mathrm{transition}}
+\approx115^\circ\text{ to }125^\circ
+```
+
+Regular-simplex reference:
+
+```math
+120^\circ
+```
+
+Straight-line reference:
+
+```math
+0^\circ
+```
+
+Therefore:
+
+```math
+\boxed{
+\text{canonical numerical trajectories are strongly non-linear}
+}
+```
+
+---
+
+## Fact 6 — Numerical distance does not organize neural distance
+
+Across all 11 subjects:
+
+```math
+\boxed{0/11\text{ significant Pearson tests}}
+```
+
+```math
+\boxed{0/11\text{ significant Spearman tests}}
+```
+
+No consistent evidence that:
+
+```math
+|i-j|\uparrow
+\quad\Rightarrow\quad
+\|\lambda_i-\lambda_j\|\uparrow
+```
+
+---
+
+## Fact 7 — Linear magnitude is not a privileged 1D axis
+
+Observed linear magnitude variance:
+
+```math
+R^2\approx8\%-15\%
+```
+
+but:
+
+```math
+\boxed{0/11\text{ significant permutation tests}}
+```
+
+The true ordering:
+
+```text
+1 → 2 → 3 → ... → 9
+```
+
+does not explain unusually large one-dimensional variance relative to random orderings.
+
+---
+
+## Fact 8 — Log magnitude does not rescue the number line
+
+Observed log magnitude variance:
+
+```math
+R^2\approx8\%-18\%
+```
+
+but again:
+
+```math
+\boxed{0/11\text{ significant permutation tests}}
+```
+
+Therefore neither linear nor logarithmic magnitude provides a privileged 1D organization.
+
+---
+
+# Current Overall Interpretation
+
+At the Bayesian posterior-mean condition-center level:
+
+```text
+All subjects:
+    full affine dimension
+        ↓
+    strongly folded numerical trajectory
+        ↓
+    weak numerical-distance organization
+        ↓
+    no privileged linear/log magnitude axis
+```
+
+The most appropriate current description is:
+
+> **The Bayesian posterior-mean number representations are consistently high-dimensional and strongly non-line-like across subjects. The nine condition centers are affinely independent in all subjects, but their simplex shapes vary substantially from relatively isotropic to strongly anisotropic. Numerical magnitude does not appear to define a privileged one-dimensional organization of the condition-mean geometry.**
+
+---
+
+# Important Cautions
+
+- Rank 8 alone is not strong evidence for a biologically special simplex.
+- Nine generic continuous points in a high-dimensional space may naturally have affine rank 8.
+- Transition angles near 120° may also arise under generic high-dimensional controls.
+- Current analyses use Bayesian posterior means, not full trial-level neural distributions.
+- Posterior means are estimated using number labels and are therefore label-conditioned.
+- Current results do not yet establish that the geometry is uniquely simplex-like.
+- Current results do not yet establish that the complete trial-level neural manifold is 8-dimensional.
+- Magnitude \(R^2\) values should not be interpreted as the percentage of neurons encoding magnitude.
+- The current analysis is descriptive cross-subject geometry, followed by permutation tests of numerical ordering.
+
+---
+
+# Remaining Analyses
+
+## 1. Matched geometric controls
+
+Compare empirical geometry against:
+
+- regular simplex,
+- Gaussian random points,
+- random irregular simplex,
+- random Poisson neural populations,
+- 1D linear number line,
+- logarithmic number line,
+- low-dimensional curved manifolds,
+- mixed-selectivity representations.
+
+Main question:
+
+```math
+\boxed{
+\text{Is the observed geometry unusual relative to plausible null models?}
+}
+```
+
+---
+
+## 2. Bayesian posterior uncertainty
+
+Sample:
+
+```math
+\lambda_{kj}^{(s)}
+\sim
+\mathrm{Gamma}(\alpha_{kj}^{*},\beta_k^{*})
+```
+
+Recalculate:
+
+- effective rank,
+- participation ratio,
+- Gram error,
+- transition angles,
+- normalized volume,
+- isotropy,
+- magnitude \(R^2\).
+
+Main question:
+
+```math
+\boxed{
+\text{How certain are the estimated geometric properties?}
+}
+```
+
+---
+
+## 3. Trial-Level Neural Geometry
+
+Return to individual presentations rather than nine posterior means.
+
+Reproduce the major paper analyses:
+
+- split-half transition-angle controls,
+- mixed-effects neural-distance vs numerical-distance analysis,
+- shattering dimensionality,
+- magnitude-residualized SSD,
+- PCA-restricted SSD,
+- CCGP,
+- exact number-line variance decomposition,
+- all \(9!\) possible number-line orderings.
+
+Main question:
+
+```math
+\boxed{
+\text{Does the full trial-level neural activity support the same geometric conclusion?}
+}
+```
+
+---
+
+# Final Working Hypothesis
+
+Current results support:
+
+```math
+\boxed{
+\text{high-dimensional, non-number-line condition-mean geometry}
+}
+```
+
+Current results do **not yet distinguish conclusively** between:
+
+```text
+structured simplex-like neural code
+```
+
+and:
+
+```text
+generic high-dimensional irregular geometry
+```
+
+That distinction requires the matched-control and trial-level analyses.
