@@ -45,91 +45,104 @@ If a subject has \(N\) neurons, the total number of features is:
 p = 9N
 ```
 
-For a spike-count feature \(j\) and number class \(k\), the model is:
+For a spike-count feature \(j\) and number class \(k\):
 
 ```math
-X_{j} \mid k,\lambda_{kj} \sim \operatorname{Poisson}(\lambda_{kj})
+X_j \mid k,\lambda_{kj} \sim \mathrm{Poisson}(\lambda_{kj})
 ```
 
-where \(\lambda_{kj}\) is the expected spike count for that number and neural-temporal feature.
+Here, \(\lambda_{kj}\) is the expected spike count for number \(k\) at feature \(j\).
 
 ## Gamma prior
 
 A Gamma prior is placed on each Poisson rate:
 
 ```math
-\lambda_{kj} \sim \operatorname{Gamma}(\alpha,\beta)
+\lambda_{kj} \sim \mathrm{Gamma}(\alpha,\beta)
 ```
 
-I parameterized it using a prior mean \(m\) and prior strength \(\tau\):
+I parameterized the prior using a prior mean \(m\) and prior strength \(\tau\):
 
 ```math
-\alpha = m\tau,\qquad \beta=\tau
+\alpha=m\tau,\qquad \beta=\tau
 ```
 
-Therefore,
+Therefore:
 
 ```math
-E[\lambda_{kj}] = m
+E[\lambda_{kj}]=m
 ```
 
-and
+and:
 
 ```math
-\operatorname{Var}(\lambda_{kj}) = \frac{m}{\tau}
+\mathrm{Var}(\lambda_{kj})=\frac{m}{\tau}
 ```
 
-So the two parameters have simple roles:
+So \(m\) controls where the prior is centered, while \(\tau\) controls how strongly the rate estimate is pulled toward that prior.
 
-- \(m\) sets the center of the prior.
-- \(\tau\) controls how strongly the estimate is pulled toward that prior.
+For number \(k\), let:
 
-For class \(k\), let \(S_{kj}\) be the total spike count for feature \(j\), and let \(n_k\) be the number of training presentations.
+```math
+S_{kj}=\sum_{i:y_i=k}x_{ij}
+```
 
-The posterior is:
+be the total spike count for feature \(j\), and let \(n_k\) be the number of training presentations of number \(k\).
+
+Because the Gamma distribution is conjugate to the Poisson likelihood:
 
 ```math
 \lambda_{kj}\mid D
 \sim
-\operatorname{Gamma}(m\tau+S_{kj},\,\tau+n_k)
+\mathrm{Gamma}(m\tau+S_{kj},\,\tau+n_k)
 ```
 
-and the posterior mean is:
+The posterior mean is:
 
 ```math
 \lambda^*_{kj}
 =
-\frac{m\tau+S_{kj}}{\tau+n_k}
+\frac{m\tau+S_{kj}}
+{\tau+n_k}
 ```
 
-This can also be written as:
+Since the MLE is:
+
+```math
+\hat{\lambda}^{\mathrm{MLE}}_{kj}
+=
+\frac{S_{kj}}{n_k}
+```
+
+the posterior mean can also be written as:
 
 ```math
 \lambda^*_{kj}
 =
 \frac{\tau}{\tau+n_k}m
 +
-\frac{n_k}{\tau+n_k}\hat{\lambda}^{\mathrm{MLE}}_{kj}
+\frac{n_k}{\tau+n_k}
+\hat{\lambda}^{\mathrm{MLE}}_{kj}
 ```
 
-So the Bayesian estimate is basically a weighted combination of the prior mean and the observed MLE rate.
+This makes the shrinkage interpretation clear. With little data, the prior contributes more. With more observations, the estimate moves closer to the MLE.
 
-## Posterior-predictive decoder
+## Posterior-predictive decoding
 
-For decoding, instead of fixing \(\lambda\) at one value, the full Gamma posterior can be integrated out:
+For decoding, I integrate over the posterior uncertainty in \(\lambda\):
 
 ```math
-p(x\mid k,D)
+p(x_j\mid k,D)
 =
 \int
-p(x\mid\lambda_{kj})
+p(x_j\mid\lambda_{kj})
 p(\lambda_{kj}\mid D)
 \,d\lambda_{kj}
 ```
 
-This gives the Gamma–Poisson posterior-predictive distribution.
+This gives a Gamma–Poisson posterior-predictive distribution.
 
-Assuming conditional independence across features:
+Assuming conditional independence between the neural-temporal features:
 
 ```math
 p(\mathbf{x}\mid k,D)
@@ -138,25 +151,25 @@ p(\mathbf{x}\mid k,D)
 p(x_j\mid k,D)
 ```
 
-In practice I use log probabilities and select the class with the largest total log posterior-predictive probability.
+The predicted number is the class with the largest posterior-predictive score.
 
 ## Prior grid
 
 The prior parameters were selected from:
 
 ```math
-m \in \operatorname{geomspace}(0.03,0.4,10)
+m \in \mathrm{geomspace}(0.03,0.4,10)
 ```
 
-and
+and:
 
 ```math
-\tau \in \operatorname{geomspace}(10,250,12)
+\tau \in \mathrm{geomspace}(10,250,12)
 ```
 
 giving 120 possible prior settings.
 
-The prior is selected inside the training data using grouped nested cross-validation. Trial ID is used as the group so presentations from the same behavioral trial do not enter both training and test sets.
+The prior parameters were selected inside the training data using grouped nested cross-validation. Trial ID was used as the group so presentations from the same behavioral trial did not appear in both training and test data.
 
 ---
 
@@ -170,7 +183,7 @@ After fitting the Gamma–Poisson model, each number has a posterior-mean popula
 (\lambda^*_{k1},\lambda^*_{k2},\ldots,\lambda^*_{kp})
 ```
 
-The nine numbers therefore give:
+The nine numbers give:
 
 ```math
 \Lambda
@@ -194,58 +207,64 @@ I used these nine vectors as the condition-level Bayesian representation for the
 YFF has 37 neurons and 9 temporal bins:
 
 ```math
-p = 37\times9 = 333
-```
-
-so:
-
-```math
-\Lambda_{\mathrm{YFF}}\in\mathbb{R}^{9\times333}
-```
-
-Each row is the posterior-mean population representation of one number.
-
-## 4.1 Centering
-
-First, I removed the common centroid:
-
-```math
-\bar{\lambda}
-=
-\frac{1}{9}\sum_{k=1}^{9}\boldsymbol{\lambda}_k
-```
-
-```math
-C_k
-=
-\boldsymbol{\lambda}_k-\bar{\lambda}
-```
-
-This is only centering. The features were not divided by their standard deviations.
-
-Centering preserves the relative geometry and gives:
-
-```math
-\sum_{k=1}^{9}C_k=0
+p=37\times9=333
 ```
 
 Therefore:
 
 ```math
-\operatorname{rank}(C)\leq8
+\Lambda_{\mathrm{YFF}}\in\mathbb{R}^{9\times333}
 ```
 
-for nine condition centers.
+Each row represents one number.
+
+## 4.1 Centering
+
+First, I calculated the centroid of the nine number representations:
+
+```math
+\bar{\boldsymbol{\lambda}}
+=
+\frac{1}{9}
+\sum_{k=1}^{9}
+\boldsymbol{\lambda}_k
+```
+
+Then each representation was centered:
+
+```math
+C_k
+=
+\boldsymbol{\lambda}_k
+-
+\bar{\boldsymbol{\lambda}}
+```
+
+This removes the common population activity shared by all numbers while preserving their relative geometry.
+
+Because:
+
+```math
+\sum_{k=1}^{9}C_k=0
+```
+
+the centered matrix can have at most rank 8:
+
+```math
+\mathrm{rank}(C)\leq8
+```
 
 ---
 
 ## 4.2 SVD and affine independence
 
-I used the SVD:
+I decomposed the centered matrix using:
 
 ```math
 C=U\Sigma V^\top
 ```
+
+The diagonal entries of \(\Sigma\) are the singular values.
 
 For YFF:
 
@@ -263,27 +282,39 @@ For YFF:
 The numerical rank is:
 
 ```math
-\operatorname{rank}(C)=8
+\mathrm{rank}(C)=8
 ```
 
-Nine points are affinely independent when the eight difference vectors
+Another way to check affine independence is to choose one point as a reference and form:
 
 ```math
-\boldsymbol{\lambda}_2-\boldsymbol{\lambda}_1,\ldots,
+A
+=
+\begin{bmatrix}
+\boldsymbol{\lambda}_2-\boldsymbol{\lambda}_1\\
+\boldsymbol{\lambda}_3-\boldsymbol{\lambda}_1\\
+\vdots\\
 \boldsymbol{\lambda}_9-\boldsymbol{\lambda}_1
+\end{bmatrix}
 ```
 
-are linearly independent.
+If:
 
-YFF therefore has the maximum possible affine dimension for nine points. Its nine posterior-mean number centers form a nondegenerate 8-dimensional simplex.
+```math
+\mathrm{rank}(A)=8
+```
 
-This does not mean that the simplex is regular.
+then the eight difference vectors are linearly independent, so the nine points are affinely independent.
+
+For YFF this rank is 8. Therefore the nine posterior-mean number centers form a nondegenerate 8-dimensional simplex.
+
+This only establishes affine independence. It does not mean that the simplex is regular.
 
 ---
 
 # 5. Representational distance matrix
 
-For every pair of numbers:
+For each pair of numbers \(i\) and \(j\), I calculated the Euclidean distance between their posterior-mean population vectors:
 
 ```math
 D_{ij}
@@ -291,7 +322,24 @@ D_{ij}
 \|\boldsymbol{\lambda}_i-\boldsymbol{\lambda}_j\|_2
 ```
 
-This gives a \(9\times9\) representational distance matrix.
+Explicitly:
+
+```math
+D_{ij}
+=
+\sqrt{
+\sum_{f=1}^{p}
+(\lambda_{if}-\lambda_{jf})^2
+}
+```
+
+Doing this for all number pairs gives the \(9\times9\) representational distance matrix:
+
+```math
+D
+=
+[D_{ij}]_{i,j=1}^{9}
+```
 
 For YFF:
 
@@ -305,7 +353,7 @@ For YFF:
 | Closest pair | 3, 8 |
 | Farthest pair | 2, 5 |
 
-I used the coefficient of variation of pairwise distances:
+I summarized the regularity of the 36 unique pairwise distances using:
 
 ```math
 \mathrm{CV}_D
@@ -314,19 +362,34 @@ I used the coefficient of variation of pairwise distances:
 {\mathrm{Mean}(D_{ij})}
 ```
 
-A regular simplex has equal pairwise distances and therefore:
+For an exact regular simplex, all pairwise distances are equal, so:
 
 ```math
 \mathrm{CV}_D=0
 ```
 
-YFF has unequal pairwise distances, so it is not a regular simplex.
+YFF has \(\mathrm{CV}_D=0.172\), showing that its edge lengths are not equal.
 
 ---
 
 # 6. PCA visualization
 
-PCA was used mainly to visualize the centered geometry.
+PCA was applied to the centered matrix \(C\).
+
+Because:
+
+```math
+C=U\Sigma V^\top
+```
+
+the variance explained by PC \(r\) is:
+
+```math
+\mathrm{VarFrac}_r
+=
+\frac{\sigma_r^2}
+{\sum_{\ell=1}^{8}\sigma_\ell^2}
+```
 
 For YFF:
 
@@ -337,41 +400,41 @@ For YFF:
 | PC3 | 10.18% |
 | PC1–PC3 | **63.60%** |
 
-The path from 1 to 9 zigzags in the PCA projections rather than following a clear straight numerical ordering.
-
-The quantitative geometry calculations were still performed in the full 333-dimensional space, not only in the first three PCs.
+The PCA plots are used mainly for visualization. All main distance and geometric calculations are performed in the full feature space.
 
 ---
 
 # 7. Gram-matrix geometry
 
-For the centered representations:
+The centered Gram matrix is:
 
 ```math
 G=CC^\top
 ```
 
-where:
+with:
 
 ```math
 G_{ij}=C_i^\top C_j
 ```
 
-The diagonal gives squared distances from the centroid:
+The diagonal contains the squared centroid radii:
 
 ```math
 G_{ii}=\|C_i\|_2^2
 ```
 
-and the off-diagonal entries contain the angular relationships:
+The off-diagonal entries describe the relationship between different number vectors:
 
 ```math
 G_{ij}
 =
-\|C_i\|_2\|C_j\|_2\cos(\theta_{ij})
+\|C_i\|_2
+\|C_j\|_2
+\cos(\theta_{ij})
 ```
 
-For a regular 8-simplex with matched radial scale:
+For a regular 8-simplex:
 
 ```math
 G_{ii}=r^2
@@ -380,11 +443,15 @@ G_{ii}=r^2
 and:
 
 ```math
-G_{ij}=-\frac{r^2}{8},
+G_{ij}
+=
+-\frac{r^2}{8},
 \qquad i\neq j
 ```
 
-For YFF the matched regular-simplex values are:
+I matched a regular simplex to the empirical radial scale and compared its Gram matrix with the empirical Gram matrix.
+
+For YFF:
 
 | Quantity | Value |
 |---|---:|
@@ -393,13 +460,16 @@ For YFF the matched regular-simplex values are:
 | Diagonal RMSE | 5.58 |
 | Off-diagonal RMSE | 4.11 |
 
-The relative Gram error is:
+The overall relative Gram error is:
 
 ```math
 E_G
 =
-\frac{\|G-G_{\mathrm{regular}}\|_F}
-{\|G_{\mathrm{regular}}\|_F}
+\frac{
+\|G-G_{\mathrm{regular}}\|_F
+}{
+\|G_{\mathrm{regular}}\|_F
+}
 ```
 
 For YFF:
@@ -408,13 +478,22 @@ For YFF:
 E_G=0.822
 ```
 
-Most of the total squared Gram deviation comes from the off-diagonal structure, so the irregularity is not only due to unequal radii. The relationships between different number representations are also heterogeneous.
+So YFF differs substantially from an exact matched regular simplex.
 
 ---
 
-# 8. Centroid-based angles
+# 8. Centroid-based angular structure
 
-The angle between two centered number representations is:
+The angle between two centered number representations is obtained directly from the Gram matrix:
+
+```math
+\cos(\theta_{ij})
+=
+\frac{G_{ij}}
+{\sqrt{G_{ii}G_{jj}}}
+```
+
+and therefore:
 
 ```math
 \theta_{ij}
@@ -427,6 +506,14 @@ The angle between two centered number representations is:
 ```
 
 For a regular 8-simplex:
+
+```math
+\cos(\theta)
+=
+-\frac{1}{8}
+```
+
+so:
 
 ```math
 \theta_{\mathrm{regular}}
@@ -444,60 +531,80 @@ For YFF:
 | Minimum | 70.67° |
 | Maximum | 134.85° |
 
-The mean is almost exactly the regular-simplex value, but the individual angles have a large spread. So the mean angle alone does not imply regularity.
+The mean is almost exactly the regular-simplex value, but the individual angles vary substantially. So the average angle alone is not enough to call the geometry regular.
 
 ---
 
 # 9. Simplex volume and conditioning
 
-Using number 1 as a reference, I formed the edge matrix:
+Using the edge matrix \(A\), the 8-dimensional simplex volume is:
 
 ```math
-A
+V_8
 =
-\begin{bmatrix}
-\boldsymbol{\lambda}_2-\boldsymbol{\lambda}_1\\
-\boldsymbol{\lambda}_3-\boldsymbol{\lambda}_1\\
-\vdots\\
-\boldsymbol{\lambda}_9-\boldsymbol{\lambda}_1
-\end{bmatrix}
+\frac{
+\sqrt{\det(AA^\top)}
+}{
+8!
+}
+```
+
+Equivalently, if \(s_1,\ldots,s_8\) are the singular values of \(A\):
+
+```math
+V_8
+=
+\frac{
+\prod_{i=1}^{8}s_i
+}{
+8!
+}
+```
+
+For YFF:
+
+```text
+Empirical volume = 2.449
+Matched regular-simplex volume = 5.689
+```
+
+I therefore used the scale-free normalized volume:
+
+```math
+V_{\mathrm{norm}}
+=
+\frac{
+V_{\mathrm{empirical}}
+}{
+V_{\mathrm{regular}}
+}
+```
+
+giving:
+
+```math
+V_{\mathrm{norm}}=0.430
+```
+
+So YFF occupies about 43% of the 8D volume of the matched regular simplex.
+
+## Conditioning
+
+Using the largest and smallest centered singular values:
+
+```math
+\kappa_{\mathrm{sym}}
+=
+\frac{\sigma_1}{\sigma_8}
 ```
 
 For YFF:
 
 ```math
-\operatorname{rank}(A)=8
+\kappa_{\mathrm{sym}}=2.63
 ```
 
-The 8D simplex volume is:
-
-```math
-V_8
-=
-\frac{\sqrt{\det(AA^\top)}}{8!}
-```
-
-YFF has:
-
-```text
-Empirical volume = 2.449
-Matched regular-simplex volume = 5.689
-Normalized volume = 0.430
-```
-
-So its volume is about 43% of a regular simplex matched to the same overall radial scale.
-
-## Conditioning and isotropy
-
-Using the centered singular values:
-
-```math
-\kappa
-=
-\frac{\sigma_1}{\sigma_8}
-```
-
-and:
+I also calculated the inverse quantity as an isotropy measure:
 
 ```math
 I
@@ -505,53 +612,76 @@ I
 \frac{\sigma_8}{\sigma_1}
 ```
 
-For YFF:
+giving:
 
-```text
-Condition number = 2.63
-Isotropy ratio = 0.380
+```math
+I=0.380
 ```
 
-For a regular isotropic simplex:
+For an isotropic regular simplex:
 
-```text
-Condition number = 1
-Isotropy ratio = 1
+```math
+\kappa_{\mathrm{sym}}=1,
+\qquad
+I=1
 ```
 
-So YFF is full rank but clearly anisotropic.
+So YFF is full rank, but the geometry is stretched unevenly across dimensions.
 
 ---
 
 # 10. Sequential transition angles
 
-For the canonical numerical sequence, define:
+This analysis asks how the representation moves when following the natural numerical sequence:
+
+```text
+1 → 2 → 3 → ... → 9
+```
+
+First, I formed the eight transition vectors:
 
 ```math
 d_k
 =
 \boldsymbol{\lambda}_{k+1}
 -
-\boldsymbol{\lambda}_k
+\boldsymbol{\lambda}_k,
+\qquad
+k=1,\ldots,8
 ```
 
-The angle between consecutive transitions is:
+Then, for each pair of consecutive transitions, I calculated:
+
+```math
+\cos(\theta_k)
+=
+\frac{
+d_k^\top d_{k+1}
+}{
+\|d_k\|_2\|d_{k+1}\|_2
+}
+```
+
+and:
 
 ```math
 \theta_k
 =
 \cos^{-1}
 \left(
-\frac{d_k^\top d_{k+1}}
-{\|d_k\|_2\|d_{k+1}\|_2}
+\frac{
+d_k^\top d_{k+1}
+}{
+\|d_k\|_2\|d_{k+1}\|_2
+}
 \right)
 ```
 
-The two useful references are:
+The reference values are:
 
 ```text
-Straight number line: 0°
-Regular simplex:      120°
+Straight number line = 0°
+Regular simplex      = 120°
 ```
 
 ### YFF
@@ -567,120 +697,433 @@ Regular simplex:      120°
 | 7→8 vs 8→9 | 118.86° |
 | **Mean** | **118.61°** |
 
-The canonical 1→2→...→9 path is therefore strongly bent rather than straight. Its mean angle is close to the 120° regular-simplex reference, although the individual angles are variable.
+The trajectory is therefore strongly bent rather than close to a straight number line.
 
 ---
 
 # 11. Number-line tests
 
+I used two related tests here.
+
+The first asks whether **pairwise neural distance increases with numerical distance**.
+
+The second asks whether the complete population geometry contains a **one-dimensional axis aligned with numerical magnitude**.
+
+These are different questions.
+
 ## 11.1 Numerical distance vs neural distance
 
-For a simple linear number line:
+For every unordered number pair:
+
+```text
+(1,2), (1,3), ..., (8,9)
+```
+
+there are:
 
 ```math
-D_{\mathrm{num}}(i,j)=|i-j|
+\binom{9}{2}=36
+```
+
+unique pairs.
+
+For each pair \((i,j)\), I calculated two quantities.
+
+### Step 1: numerical distance
+
+For a linear number line:
+
+```math
+x_{ij}=|i-j|
+```
+
+For example:
+
+```text
+|1 - 2| = 1
+|1 - 5| = 4
+|1 - 9| = 8
+```
+
+### Step 2: neural distance
+
+Using the Bayesian population representations:
+
+```math
+y_{ij}
+=
+\|\boldsymbol{\lambda}_i-\boldsymbol{\lambda}_j\|_2
+```
+
+or explicitly:
+
+```math
+y_{ij}
+=
+\sqrt{
+\sum_{f=1}^{p}
+(\lambda_{if}-\lambda_{jf})^2
+}
+```
+
+This gives two vectors of length 36:
+
+```math
+\mathbf{x}
+=
+(x_{12},x_{13},\ldots,x_{89})
 ```
 
 and:
 
 ```math
-D_{\mathrm{neural}}(i,j)
+\mathbf{y}
 =
-\|\boldsymbol{\lambda}_i-\boldsymbol{\lambda}_j\|_2
+(y_{12},y_{13},\ldots,y_{89})
 ```
 
-If the geometry followed a number line, larger numerical separation should generally correspond to larger neural separation.
+### Step 3: Pearson correlation
+
+I then calculated the Pearson correlation between numerical distance and neural distance:
+
+```math
+r
+=
+\frac{
+\sum_q(x_q-\bar{x})(y_q-\bar{y})
+}{
+\sqrt{
+\sum_q(x_q-\bar{x})^2
+}
+\sqrt{
+\sum_q(y_q-\bar{y})^2
+}
+}
+```
+
+where \(q\) indexes the 36 number pairs.
+
+The interpretation is simple:
+
+```text
+r > 0  : larger numerical distance tends to mean larger neural distance
+r ≈ 0  : little linear relationship
+r < 0  : larger numerical distance tends to mean smaller neural distance
+```
+
+A simple number-line representation would therefore predict a positive \(r\).
 
 For YFF:
 
-```text
-Pearson r = -0.266
+```math
+r=-0.266
 ```
 
-For logarithmic numerical distance:
+So the relationship is slightly negative rather than positive.
+
+For example:
+
+| Number pair | Numerical distance | Neural distance |
+|---|---:|---:|
+| 1 and 9 | 8 | ≈ 5.012 |
+| 2 and 5 | 3 | ≈ 8.815 |
+
+Even though 1 and 9 are much farther apart numerically, their neural representations are closer than those of 2 and 5.
+
+---
+
+## 11.2 Logarithmic numerical distance
+
+I repeated exactly the same procedure, but replaced linear numerical distance with logarithmic numerical distance.
+
+For each pair:
 
 ```math
-D_{\log}(i,j)
+x^{\log}_{ij}
 =
 |\log(i)-\log(j)|
 ```
 
-the result is:
+The neural distance stays unchanged:
 
-```text
-Pearson r = -0.221
+```math
+y_{ij}
+=
+\|\boldsymbol{\lambda}_i-\boldsymbol{\lambda}_j\|_2
 ```
 
-Both correlations are slightly negative rather than positive.
+I then calculated:
 
-For example:
-
-```text
-Neural distance between 1 and 9 ≈ 5.012
-Neural distance between 2 and 5 ≈ 8.815
+```math
+r_{\log}
+=
+\mathrm{corr}
+\left(
+x^{\log}_{ij},
+y_{ij}
+\right)
 ```
 
-even though 1 and 9 are much farther apart numerically.
+using the same Pearson correlation formula.
 
-So the posterior-mean Euclidean geometry does not show the distance structure expected from a simple linear or logarithmic number line.
+For YFF:
+
+```math
+r_{\log}=-0.221
+```
+
+So using logarithmic numerical spacing does not produce the positive distance relationship expected from a logarithmic number line either.
 
 ---
 
 # 12. One-dimensional magnitude-axis fit
 
-The previous test uses pairwise distances. I also asked a slightly different question: even if the complete geometry is high-dimensional, is there a one-dimensional direction inside it that follows numerical magnitude?
+The distance-correlation analysis above asks whether **pairwise distances** behave like a number line.
 
-For the linear model:
+Here I asked a different question:
+
+> How much of the full neural geometry can be explained by a single direction that is explicitly aligned with numerical magnitude?
+
+## 12.1 Linear magnitude axis
+
+Start with the numerical values:
 
 ```math
-x_k=k-\bar{k}
+x_k=k,
+\qquad
+k=1,\ldots,9
+```
+
+Since the neural matrix \(C\) has already been centered, I also center the numerical values:
+
+```math
+\tilde{x}_k
+=
+x_k-\bar{x}
+```
+
+For numbers 1 through 9:
+
+```math
+\bar{x}=5
+```
+
+so:
+
+```math
+\tilde{\mathbf{x}}
+=
+(-4,-3,-2,-1,0,1,2,3,4)^\top
+```
+
+Now fit the centered neural representation using one numerical predictor:
+
+```math
+C
+\approx
+\tilde{\mathbf{x}}b^\top
+```
+
+where:
+
+```math
+b\in\mathbb{R}^{p}
+```
+
+is the neural direction associated with numerical magnitude.
+
+The least-squares estimate is:
+
+```math
+\hat b^\top
+=
+\frac{
+\tilde{\mathbf{x}}^\top C
+}{
+\tilde{\mathbf{x}}^\top\tilde{\mathbf{x}}
+}
+```
+
+The fitted neural representation is then:
+
+```math
+\hat C
+=
+\tilde{\mathbf{x}}\hat b^\top
+```
+
+So \(\hat C\) is the part of the neural geometry that can be represented along the canonical numerical axis.
+
+## 12.2 Variance explained
+
+I measured the fraction of the centered neural geometry captured by this fit using:
+
+```math
+R^2_{\mathrm{mag}}
+=
+\frac{
+\|\hat C\|_F^2
+}{
+\|C\|_F^2
+}
+```
+
+where the Frobenius norm is:
+
+```math
+\|C\|_F^2
+=
+\sum_{k=1}^{9}
+\sum_{f=1}^{p}
+C_{kf}^2
+```
+
+For YFF:
+
+```math
+R^2_{\mathrm{linear}}=0.0813
+```
+
+or:
+
+```text
+Linear magnitude variance = 8.13%
+```
+
+So only about 8% of the total centered population geometry lies along the canonical linear number axis.
+
+---
+
+## 12.3 Logarithmic magnitude axis
+
+I repeated the same fit using:
+
+```math
+x_k=\log(k)
+```
+
+and then centered these values:
+
+```math
+\tilde{x}^{\log}_k
+=
+\log(k)
+-
+\frac{1}{9}
+\sum_{j=1}^{9}\log(j)
+```
+
+The fitted direction is:
+
+```math
+\hat b_{\log}^\top
+=
+\frac{
+(\tilde{\mathbf{x}}^{\log})^\top C
+}{
+(\tilde{\mathbf{x}}^{\log})^\top
+\tilde{\mathbf{x}}^{\log}
+}
 ```
 
 and:
 
 ```math
-C_k\approx x_kb
+\hat C_{\log}
+=
+\tilde{\mathbf{x}}^{\log}
+\hat b_{\log}^\top
 ```
 
-where \(b\) is the fitted neural magnitude direction.
-
-The explained fraction of the centered geometry is:
+Then:
 
 ```math
-R^2
+R^2_{\log}
 =
-\frac{\|\hat C\|_F^2}
-{\|C\|_F^2}
+\frac{
+\|\hat C_{\log}\|_F^2
+}{
+\|C\|_F^2
+}
 ```
-
-For YFF:
-
-| One-dimensional model | Variance explained |
-|---|---:|
-| Linear magnitude | **8.13%** |
-| Log magnitude | **7.79%** |
-| PC1 | **38.81%** |
-
-PC1 is the best unconstrained one-dimensional direction, whereas the magnitude axis is forced to follow numerical order.
 
 For YFF:
 
 ```text
-Linear magnitude / PC1 ≈ 0.21
-Log magnitude / PC1    ≈ 0.20
+Linear magnitude = 8.13%
+Log magnitude    = 7.79%
 ```
 
-So numerical magnitude explains only about one fifth as much variance as the best unconstrained one-dimensional direction.
-
-The exhaustive comparison with all possible \(9!\) one-dimensional orderings is not included here because that analysis is not yet completed in the current results.
+Neither numerical transformation captures a large fraction of the population geometry.
 
 ---
 
-# 13. Cross-subject Bayesian geometry
+# 13. Comparison with PC1
+
+There is an important comparison here.
+
+The magnitude-axis analysis asks:
+
+> How much variance can a specific one-dimensional numerical axis explain?
+
+PCA asks:
+
+> What is the best possible one-dimensional direction for explaining variance, without requiring it to follow numerical magnitude?
+
+For PC1:
+
+```math
+R^2_{\mathrm{PC1}}
+=
+\frac{\sigma_1^2}
+{\sum_{j=1}^{8}\sigma_j^2}
+```
+
+For YFF:
+
+```text
+Linear magnitude = 8.13%
+Log magnitude    = 7.79%
+PC1              = 38.81%
+```
+
+Therefore:
+
+```math
+\frac{
+R^2_{\mathrm{linear}}
+}{
+R^2_{\mathrm{PC1}}
+}
+=
+\frac{0.0813}{0.3881}
+\approx0.21
+```
+
+and:
+
+```math
+\frac{
+R^2_{\log}
+}{
+R^2_{\mathrm{PC1}}
+}
+=
+\frac{0.0779}{0.3881}
+\approx0.20
+```
+
+So the canonical numerical axis explains only about 20% of the variance captured by the best unconstrained one-dimensional direction.
+
+This is useful because the data clearly contain strong one-dimensional variation, but that dominant direction is not simply numerical magnitude.
+
+---
+
+# 14. Cross-subject Bayesian geometry
 
 The same posterior-mean geometry analysis was then applied to all 11 subjects.
 
-## 13.1 Affine dimension and PC1
+## 14.1 Affine dimension and PC1
 
 | Subject | Features | Affine rank | PC1 variance |
 |---|---:|---:|---:|
@@ -699,16 +1142,16 @@ The same posterior-mean geometry analysis was then applied to all 11 subjects.
 All 11 subjects have:
 
 ```math
-\operatorname{rank}(C)=8
+\mathrm{rank}(C)=8
 ```
 
 So the nine Bayesian posterior-mean number centers are affinely independent in every subject.
 
-The important point is that full affine rank does not imply a regular simplex. The shapes can still be very different.
+The main point is that full affine rank does not imply regular-simplex geometry. The shape can still be very different between subjects.
 
 ---
 
-## 13.2 Simplex shape across subjects
+## 14.2 Simplex shape across subjects
 
 | Subject | Distance CV | Gram error | Centroid-angle SD | Normalized volume | Condition number | Isotropy |
 |---|---:|---:|---:|---:|---:|---:|
@@ -726,22 +1169,22 @@ The important point is that full affine rank does not imply a regular simplex. T
 
 For a perfectly regular simplex:
 
-```text
-Distance CV       = 0
-Gram error        = 0
-Centroid-angle SD = 0
-Normalized volume = 1
-Condition number  = 1
-Isotropy ratio    = 1
-```
+| Measure | Regular simplex |
+|---|---:|
+| Distance CV | 0 |
+| Gram error | 0 |
+| Centroid-angle SD | 0 |
+| Normalized volume | 1 |
+| Condition number | 1 |
+| Isotropy ratio | 1 |
 
-YFR, YFS, and YFT are the closest to an isotropic/regular geometry among the subjects.
+YFR, YFS, and YFT are the closest to regular/isotropic geometry among the subjects.
 
-YFP, YFJ, and YFU are more anisotropic and irregular.
+YFP, YFJ, and YFU are more anisotropic.
 
 ---
 
-## 13.3 Transition angles across subjects
+## 14.3 Transition angles across subjects
 
 | Subject | Mean transition angle |
 |---|---:|
@@ -757,15 +1200,35 @@ YFP, YFJ, and YFU are more anisotropic and irregular.
 | YFT | 120.16° |
 | YFU | 124.83° |
 
-All subjects are roughly between 115° and 125°, close to the 120° regular-simplex transition-angle reference and far from the 0° straight-line reference.
+All subjects fall roughly between 115° and 125°.
 
-However, transition angle alone does not tell us that the geometry is regular. For example, YFR and YFP both have transition angles near 120°, but their Gram error, volume, conditioning, and isotropy are very different.
+This is close to the 120° regular-simplex reference and very different from the 0° straight-number-line reference.
+
+However, this result should not be interpreted by itself. For example, YFR and YFP both have transition angles close to 120°, but they have very different Gram errors, volumes and conditioning.
 
 ---
 
-## 13.4 Numerical distance vs neural distance
+## 14.4 Numerical distance vs neural distance
 
-Using only the Pearson correlation:
+For each subject, I repeated the same 36-pair calculation:
+
+```math
+x_{ij}=|i-j|
+```
+
+```math
+y_{ij}
+=
+\|\boldsymbol{\lambda}_i-\boldsymbol{\lambda}_j\|_2
+```
+
+and calculated:
+
+```math
+r
+=
+\mathrm{corr}(\mathbf{x},\mathbf{y})
+```
 
 | Subject | Pearson \(r\) |
 |---|---:|
@@ -781,13 +1244,42 @@ Using only the Pearson correlation:
 | YFT | -0.178 |
 | YFU | -0.013 |
 
-There is no consistent positive relationship across subjects. Most values are close to zero and several are negative.
+There is no consistent positive relationship across subjects. Most correlations are close to zero and several are negative.
 
-For YFF, \(r=-0.266\) means that larger numerical differences tend, if anything, to have slightly smaller neural distances. This is opposite to the prediction of a simple number-line representation.
+So increasing numerical separation does not consistently produce increasing neural separation in the posterior-mean geometry.
 
 ---
 
-## 13.5 Magnitude-axis variance across subjects
+## 14.5 Magnitude-axis variance across subjects
+
+For each subject, I fitted:
+
+```math
+C
+\approx
+\tilde{\mathbf{x}}b^\top
+```
+
+using both:
+
+```math
+x_k=k
+```
+
+and:
+
+```math
+x_k=\log(k)
+```
+
+and measured:
+
+```math
+R^2
+=
+\frac{\|\hat C\|_F^2}
+{\|C\|_F^2}
+```
 
 | Subject | Linear magnitude \(R^2\) | Log magnitude \(R^2\) | PC1 variance |
 |---|---:|---:|---:|
@@ -803,88 +1295,178 @@ For YFF, \(r=-0.266\) means that larger numerical differences tend, if anything,
 | YFT | 10.33% | 10.17% | 23.83% |
 | YFU | 14.13% | 11.95% | 45.77% |
 
-The linear magnitude axis explains about 8–15% of the total centered variance across subjects, and the logarithmic axis explains about 8–18%.
+The linear magnitude direction explains about 8–15% of the centered geometry and the logarithmic direction about 8–18%.
 
-In comparison, PC1 alone explains about 22–53%.
+PC1 explains about 22–53%.
 
-So there is some variance along a numerical-magnitude direction, but numerical magnitude is not the dominant one-dimensional direction in these posterior-mean representations.
-
----
-
-# 14. Current summary
-
-At the posterior-mean condition-center level:
-
-1. Population decoding remains modest across different classifiers. Poisson MLE, LDA, and Gamma–Poisson Bayesian decoding all average around 15–16%.
-
-2. The Bayesian representation gives nine posterior-mean population vectors, one for each number.
-
-3. After centering, all 11 subjects have affine rank 8. Therefore the nine number centers are affinely independent in every subject.
-
-4. Full rank does not mean regular-simplex geometry. Distance regularity, Gram error, volume, conditioning, and isotropy vary substantially across subjects.
-
-5. YFR, YFS, and YFT have the most regular/isotropic geometries among the subjects, while YFP, YFJ, and YFU are more anisotropic.
-
-6. Sequential transition angles are consistently around 115–125°, much closer to the 120° simplex reference than to a straight 0° trajectory.
-
-7. Neural distance does not consistently increase with numerical distance.
-
-8. Linear and logarithmic magnitude axes explain much less variance than the best unconstrained one-dimensional direction given by PC1.
-
-So the current posterior-mean geometry is high-dimensional and clearly non-number-line-like, but the present analyses alone do not tell us whether this geometry is specifically simplex-like or is what we would expect from generic high-dimensional neural representations.
+So the population activity contains much stronger one-dimensional variation than what is captured specifically by numerical magnitude.
 
 ---
 
-# 15. Next steps
+# 15. Current summary
 
-### 1. Recovery analysis
+1. Poisson MLE, LDA, and Gamma–Poisson Bayesian decoding give similar population decoding accuracies, averaging around 15–16%.
 
-Build synthetic data with a known ground-truth geometry and pass it through the same analysis.
+2. The Gamma–Poisson model gives a posterior distribution for each number × neural-temporal feature. The posterior means provide nine population vectors that can be used for condition-level geometry.
 
-For example, start with a known one-dimensional representation and test whether the current estimation and geometry pipeline recovers dimension 1 or artificially produces a higher-dimensional structure.
+3. After centering, all 11 subjects have affine rank 8. Therefore the nine posterior-mean number centers are affinely independent.
 
-The synthetic data should be matched as closely as possible to the real data in number of neurons, trial counts, firing-rate scale, temporal bins, and realistic spike-count variability.
+4. Rank 8 alone does not mean that the geometry is a regular simplex. Pairwise distances, Gram structure, centroid angles, volume, conditioning and isotropy show substantial deviations from regularity.
 
-This will tell us what geometric distortions are introduced by finite sampling, Poisson variability, Bayesian shrinkage, and the analysis procedure itself.
+5. YFR, YFS and YFT are the most regular/isotropic subjects by these measures. YFP, YFJ and YFU are more anisotropic.
 
-### 2. Transition-angle controls across subjects
+6. The sequential numerical trajectory has mean transition angles around 115–125° across subjects, far from a straight 0° number-line trajectory and close to the 120° regular-simplex reference.
 
-Compare the empirical transition angles with matched control representations rather than interpreting proximity to 120° by itself.
+7. Pairwise neural distance does not consistently increase with numerical distance. The Pearson correlations are mostly near zero or negative.
 
-The controls should preserve important properties of the neural data while removing the specific numerical geometry.
+8. Linear and logarithmic magnitude axes explain only a small part of the full population geometry. They also explain much less variance than PC1.
 
-### 3. Full Bayesian posterior geometry
+Overall, the posterior-mean number representations are high-dimensional and clearly not organized as a simple number line. However, the current results do not yet establish whether the observed high-dimensional geometry is specifically a structured neural simplex or a more generic consequence of high-dimensional noisy population activity.
 
-The current geometry uses only:
+---
+
+# 16. Next steps
+
+## 1. Recovery analysis
+
+The immediate next step is a recovery analysis.
+
+The idea is to generate synthetic data where the true geometry is known, for example a true one-dimensional number representation:
+
+```math
+\boldsymbol{\mu}_k
+=
+a+k\mathbf{v}
+```
+
+or more generally:
+
+```math
+\boldsymbol{\mu}_k
+=
+a+z_k\mathbf{v}
+```
+
+where \(z_k\) controls the known position of number \(k\) on the ground-truth line.
+
+Then generate spike counts from these known rates:
+
+```math
+X_{ikj}
+\sim
+\mathrm{Poisson}(\lambda_{kj})
+```
+
+while matching the real data as closely as possible in:
+
+- number of neurons,
+- number of presentations per number,
+- firing-rate distribution,
+- temporal-bin structure,
+- overall spike-count scale.
+
+Then run exactly the same Bayesian estimation and geometry analysis on the synthetic data.
+
+The main question is:
+
+```text
+Known ground truth
+        ↓
+Generate realistic neural data
+        ↓
+Apply the same analysis
+        ↓
+Compare recovered geometry with true geometry
+```
+
+For example, if the true representation is one-dimensional but the analysis consistently recovers rank 8 and transition angles near 120°, that would show that some of the observed high-dimensional geometry can be produced by estimation noise or the analysis procedure itself.
+
+If the one-dimensional geometry is recovered correctly, then the empirical rank-8 result becomes more informative.
+
+## 2. Matched transition-angle controls
+
+The empirical transition angles should be compared with matched controls rather than interpreting 120° by itself.
+
+Useful controls include:
+
+```text
+1D number line
+random high-dimensional points
+regular simplex
+irregular simplex
+matched Poisson population data
+```
+
+The same transition-angle calculation should be applied to each control.
+
+## 3. Full Bayesian posterior geometry
+
+The current geometry uses only the posterior mean:
 
 ```math
 E[\Lambda\mid D]
 ```
 
-Instead, sample:
+Instead, draw samples from the posterior:
 
 ```math
-\Lambda^{(s)}\sim p(\Lambda\mid D)
+\Lambda^{(s)}
+\sim
+p(\Lambda\mid D)
 ```
 
-and repeat the geometric measurements for each posterior sample.
-
-This will show how certain we actually are about the observed distances, angles, rank structure, Gram geometry, volume, and conditioning.
-
-### 4. Control the effect of cluster noise
-
-The current condition centers may look high-dimensional partly because each number representation is estimated from noisy neural responses.
-
-We need a control that separates:
+For each posterior draw, repeat the geometric measurements:
 
 ```text
-true separation between number representations
+affine rank
+pairwise distances
+Gram geometry
+centroid angles
+transition angles
+volume
+conditioning
+isotropy
+number-line measures
 ```
 
-from:
+This gives uncertainty distributions for the geometric quantities instead of treating the posterior mean as exact.
+
+## 4. Control for noise in the number clusters
+
+Each number is actually represented by a cloud of trial-level neural responses, not a single point.
+
+Conceptually:
+
+```math
+X_{ik}
+=
+\boldsymbol{\mu}_k
++
+\boldsymbol{\epsilon}_{ik}
+```
+
+where:
+
+```math
+\boldsymbol{\mu}_k
+```
+
+is the underlying number representation and:
+
+```math
+\boldsymbol{\epsilon}_{ik}
+```
+
+is trial-to-trial variability and measurement noise.
+
+The current analysis mainly compares estimates of the centers \(\boldsymbol{\mu}_k\).
+
+The next analysis should determine how much of the apparent separation and high-dimensional structure remains after accounting for the within-number variability:
 
 ```text
-trial-to-trial / estimation noise around each representation
+between-number geometry
+vs.
+within-number noise
 ```
 
-This should help determine whether the apparent high-dimensional simplex structure remains after accounting for within-number variability.
+This is important for deciding whether the observed geometry reflects stable number representations or noisy estimates of those representations.
