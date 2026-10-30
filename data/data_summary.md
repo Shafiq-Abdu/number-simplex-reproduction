@@ -200,19 +200,7 @@ regionsVect
 
 The spike matrix is stored in a **sparse representation**, so the raw neural data should not be interpreted as an ordinary dense trial × neuron table.
 
-The basic processing structure is:
 
-```text
-Continuous spike recording
-        ↓
-Behavioral/event onset times
-        ↓
-Extract stimulus-specific time window
-        ↓
-Count/bin spikes for each neuron
-        ↓
-Construct presentation × neural-feature matrix
-```
 
 ---
 
@@ -249,38 +237,10 @@ YFF provides a useful reference for understanding the data structure.
 | Number range analyzed | 1–9 |
 | Number presentations after filtering | 109 |
 | MTL neurons used | 37 |
-| Temporal bins | 9 |
-| Temporal population features | 333 |
 
-The number of **presentations can exceed the number of trials** because an arithmetic trial contains multiple numerical operands.
 
----
 
-## 10. Important Analysis Considerations
 
-1. **Trial and presentation are not identical.**  
-   One arithmetic trial can contribute multiple numerical presentations.
-
-2. **Train/test leakage must be avoided.**  
-   Presentations originating from the same trial should not be split between training and testing when trial dependence is relevant.
-
-3. **Raw neuron count and MTL neuron count are different.**  
-   The complete recordings contain more neurons, while the main analysis focuses on the selected MTL population.
-
-4. **Spike-file formats are not completely uniform across subjects.**  
-   Some subjects use `spikes.mat`, while others use task-specific spike files.
-
-5. **The main arithmetic analysis window is fixed at 50–950 ms.**
-
-6. **The current fixed temporal representation uses 100-ms bins**, giving nine temporal features per neuron.
-
-7. **Nine numerical classes are analyzed:** numbers 1 through 9.
-
-8. Behavioral/event information and spike recordings must always be aligned before constructing firing-rate or temporal neural features.
-
----
-
-## 11. Dataset at a Glance
 
 ```text
 11 subjects
