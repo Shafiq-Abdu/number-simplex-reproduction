@@ -1,12 +1,10 @@
-# Number Simplex Reproduction — Research Summary and Recovery Plan
+# Number Simplex Reproduction 
+ 
+ Neural representation of symbolic numbers 1–9; real MTL recordings, raw-population controls, Bayesian representations, temporal LDA, and synthetic ground-truth recovery.  
 
-**Updated:** 12 November 2026  
-**Scope:** Neural representation of symbolic numbers 1–9; real MTL recordings, raw-population controls, Bayesian representations, temporal LDA, and synthetic ground-truth recovery.  
-**Central question:** Does the observed neural geometry provide reproducible, simplex-specific evidence, or can the same statistics arise from finite-sample noise, supervised fitting, or other representations?
 
-> **Evidence labels:** **Measured** = numerical result from our analyses; **Preliminary** = observed but not held-out or replicated; **Planned** = not yet completed; **Verify** = implementation or numerical result needs checking against saved notebooks/scripts. Results from different feature spaces are **not directly comparable** without matched preprocessing.
 
-## 1. Research structure
+## 1.  structure
 
 | Workstream | Data/representation | Primary question | Current position |
 |---|---|---|---|
@@ -195,7 +193,7 @@ xychart-beta
     bar [6.957, 2.678, 3.307, 3.821, 7.803, 7.063, 6.480, 6.895]
 ```
 
-## 8. Which geometric statistics do we use?
+## 8. Additional tests :
 
 Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`, with nonzero singular values `s_i`. Define `p_i = s_i² / sum_j s_j²`.
 
@@ -228,7 +226,7 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 
 **Open scientific question:** Why is neural distance weakly related to numerical distance? A non-number-line code is one possible explanation, but unreliable raw RDMs make it premature to prefer that explanation over noise. Test model RDMs only after establishing reliable number-specific distances.
 
-## 10. Reviewer criticisms: evidence and remaining actions
+## 10. Reviewer criticisms ,evidence and remaining to do list
 
 | Reviewer concern | What we have done | Result / interpretation | What remains |
 |---|---|---|---|
@@ -243,8 +241,7 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 | Regular simplex vs generic high-dimensional structure | Regular, irregular, random high-D simulated | Rank/effective rank alone not diagnostic | Gram matrix, edge CV, volume, condition number |
 | Cross-format and motor-plan confounds | Identified from review | Not resolved by present simulations | Arabic/dots comparison; task/operand/motor controls |
 
-## 11. Important implementation checks before a strong claim
-
+## 11. to check 
 | Check | Why it matters | Required verification |
 |---|---|---|
 | Permutation nesting | Hyperparameter optimization on observed data only may bias significance | In each shuffled-label run, repeat the **entire** feature-selection/tuning procedure |
@@ -265,7 +262,7 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 | Unsupervised PCA | Tests reviewer concern that supervised LDA induces structure | PCA can emphasize trial noise and global firing variability | **Run matched PCA control** on same simulated data and held-out real data |
 | Raw temporal counts | Minimal transformation, avoids supervised geometry construction | High sampling noise; unreliable raw RDM | Retain as essential baseline and noise control |
 
-## 13. What is positive, negative and unresolved?
+## 13.  unresolved?
 
 | Assessment | Evidence | Defensible conclusion |
 |---|---|---|
@@ -278,7 +275,7 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 | **Unresolved** | Real YFF effective rank 6.957 | Not sufficient to identify underlying geometry |
 | **Unresolved** | Bayesian-derived fit and rank | Need matched ground-truth recovery and reliability |
 
-## 14. Immediate next steps (prioritized)
+## 14. to do 
 
 | Priority | Concrete task | Deliverable / success criterion |
 |---:|---|---|
@@ -291,7 +288,7 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 | **7** | **Test numerical-distance versus neural-distance predictions** and transition angles | Model RDM comparisons with independent-split reliability |
 | **8** | **Optionally complete Bayesian ground-truth recovery** on the same simulations | Fair Bayesian vs LDA comparison, including null and low-D cases |
 
-### Two most important immediate experiments
+### Two 
 
 1. **Ground-truth recovery with LDA + full geometric diagnostics:** Retain the existing seven models, repeat over seeds, include the 500-neuron null, and calculate **effective rank + participation ratio + Gram-matrix/edge regularity + volume + transition-angle null distributions**. Ensure tuning and neuron selection are nested inside permutations and folds.
 2. **Real-data reliability before geometry claims:** On YFF/YFU, estimate **held-out, noise-corrected centroid geometry** and compare with matched synthetic benchmarks. If RDM reliability is near zero, report that the present data cannot resolve simplex versus line versus random high-D, rather than assigning a model from effective rank alone.
@@ -313,4 +310,3 @@ Let `C` be the 9 × feature-dimension centroid matrix, `A = C - mean(C, axis=0)`
 | Centered centroid matrix | `C_centered` |
 | Correct entropy-rank formula | `p = S**2 / sum(S**2); exp(-sum(p*log(p)))` |
 
-**Reporting caution:** Numbers in Sections 4–5 were recalled from previous analysis summaries rather than re-extracted from raw notebook outputs in this report. Confirm them against saved files before a manuscript, presentation, or advisor-facing quantitative claim. The seven synthetic LDA results and corrected YFF effective rank were verified in the current working session. Mermaid figures are GitHub-renderable on supported GitHub Markdown surfaces; the tables remain readable if diagrams are unavailable.
